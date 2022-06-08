@@ -14,7 +14,9 @@ if (!username) {
   alert('please input your username')
   location.reload()
 }
-location.href = location.toString() + `?username=${username}`
+const url = new URL(location.href)
+url.searchParams.set('username', username)
+location.href = url.toString()
 </script>
 </body>
 </html>

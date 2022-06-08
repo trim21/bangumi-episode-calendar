@@ -4,3 +4,5 @@ namespace global {
     export = content;
   }
 }
+
+declare var BANGUMI_CALENDAR: KVNamespace<string>

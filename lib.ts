@@ -1,60 +1,13 @@
 import pLimit from 'p-limit'
-import { Collection, Episode, Paged, Subject } from './bangumi'
-import * as pkg from './package.json'
+import { Episode, Subject } from './bangumi'
+import {
+  fetchAllEpisode,
+  fetchAllUserCollection,
+  getSubjectInfo
+} from './request'
 
 const SubjectTypeAnime = 2
 const SubjectTypeEpisode = 6
-
-const defaultHeaders = { 'user-agent': `trim21/bangumi-episode-ics/cf-workers/${pkg.version}` }
-
-async function fetchAllUserCollection (username: string, pageSize: number = 50): Promise<Array<Collection>> {
-  const data: Array<Collection> = []
-  let offset: number = 0
-  let res: Paged<Collection>
-
-  do {
-    const r = await fetch(`https://api.bgm.tv/v0/users/${username}/collections` + '?' + qs({
-      type: '3', offset: offset.toString(), limit: pageSize.toString(),
-    }),
-      {
-        headers: defaultHeaders
-      }
-    )
-    res = await r.json()
-
-    data.push(...res.data)
-
-    offset += pageSize
-  } while (offset < res.total)
-
-  return data
-}
-
-async function fetchAllEpisode (
-  subjectID: number,
-  pageSize: number = 200
-): Promise<Array<Episode>> {
-  const data: Array<Episode> = []
-  let offset: number = 0
-  let res: Paged<Episode>
-
-  do {
-    const r = await fetch(`https://api.bgm.tv/v0/episodes?` + qs({
-      subject_id: subjectID,
-      offset,
-      limit: pageSize,
-    }), {
-      headers: defaultHeaders
-    })
-    res = await r.json()
-
-    data.push(...res.data)
-
-    offset += pageSize
-  } while (offset < res.total)
-
-  return data
-}
 
 export async function buildICS (username: string): Promise<string> {
   console.log('fetching episodes')
@@ -67,13 +20,7 @@ export async function buildICS (username: string): Promise<string> {
   const limit = pLimit(10)
 
   const subjects: Subject[] = await Promise.all(
-    collections.map((s) =>
-      limit(async (): Promise<Subject> => {
-        const r = await fetch(
-          `https://api.bgm.tv/v0/subjects/${s.subject_id}`, { headers: defaultHeaders }
-        )
-        return await r.json()
-      })
+    collections.map((s) => limit(() => getSubjectInfo(s.subject_id))
     )
   )
 
@@ -135,10 +82,6 @@ function renderICS (
   return calendar.toString()
 }
 
-function qs (params: Record<string, any>): string {
-  return (new URLSearchParams(Object.entries(params).map(([key, value]) => [key, value.toString()])).toString())
-}
-
 interface Event {
   start: [number, number, number],
   end: [number, number, number],
@@ -165,7 +108,7 @@ class ICalendar {
       `BEGIN:VCALENDAR`,
       'VERSION:2.0',
       'PRODID:-//trim21//bangumi-icalendar//CN',
-      'NAME:Bangumi Episode Air Calendar',
+      `NAME:${this.name}`,
       `X-WR-CALNAME:${this.name}`,
     )
 
@@ -201,7 +144,7 @@ function formatDateObject (d: Date): string {
 }
 
 function formatDate (d: [number, number, number]): string {
-  return d[0].toString().padStart(4) + pad(d[1] + 1) + pad(d[2])
+  return d[0].toString().padStart(4) + pad(d[1]) + pad(d[2])
 }
 
 function pad (n: number) {

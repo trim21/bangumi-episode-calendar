@@ -1,3 +1,7 @@
 name = "bangumi-calendar"
 main = "./worker.ts"
 compatibility_date = "2022-06-08"
+
+kv_namespaces = [
+    { binding = "BANGUMI_CALENDAR", id = "0773e0d0ce874a3eae9444e66a2364e7" }
+]
