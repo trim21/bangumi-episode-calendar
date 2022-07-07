@@ -2,6 +2,7 @@ import { randomUUID } from "crypto";
 
 import { AxiosError } from "axios";
 import pLimit from "p-limit";
+import { NotFoundException } from "@nestjs/common";
 
 import { Collection, Episode, Paged, Subject } from "./bangumi";
 import { isNotNull } from "./util";
@@ -9,18 +10,20 @@ import { client } from "./request";
 import { Cache } from "./cache";
 
 export async function buildICS(username: string, cache: Cache): Promise<string> {
-  console.log("fetching episodes");
-  let collections = (await fetchAllUserCollection(username)).filter(
-    (value) => value.subject_type == SubjectTypeAnime || value.subject_id == SubjectTypeEpisode,
-  );
+  console.log("fetching episodes for user", username);
+  try {
+    let collections = await fetchAllUserCollection(username);
+    console.log(collections);
+    const limit = pLimit(10);
 
-  const limit = pLimit(10);
+    const subjects: SlimSubject[] = (
+      await Promise.all(collections.map((s) => limit(() => getSubjectInfo(s.subject_id, cache))))
+    ).filter(isNotNull);
 
-  const subjects: SlimSubject[] = (
-    await Promise.all(collections.map((s) => limit(() => getSubjectInfo(s.subject_id, cache))))
-  ).filter(isNotNull);
-
-  return renderICS(subjects);
+    return renderICS(subjects);
+  } catch (e) {
+    throw new NotFoundException();
+  }
 }
 
 async function fetchAllUserCollection(username: string, pageSize: number = 50): Promise<Array<Collection>> {
@@ -72,7 +75,8 @@ async function getSubjectInfo(subjectID: number, cache: Cache): Promise<SlimSubj
     data = req.data;
   } catch (e: any) {
     if (e instanceof AxiosError) {
-      if (e.code === "404") {
+      if (e.response?.status === 404) {
+        await cache.set(cacheKey, null, 60 * 60 * 24);
         return null;
       }
     }
@@ -91,7 +95,7 @@ async function getSubjectInfo(subjectID: number, cache: Cache): Promise<SlimSubj
     future_episodes: episodes,
   };
 
-  await cache.set(cacheKey, result, 60 * 60 * 24);
+  await cache.set(cacheKey, result, 60 * 60 * 24 * 7);
 
   return result;
 }
