@@ -10,17 +10,16 @@ COPY tsconfig*.json nest-cli.json ./
 
 COPY src src/
 
-RUN yarn build
+RUN yarn build && rm node_modules -rf
+
+RUN yarn --prod
 
 #####
 FROM node:lts-slim
 
 WORKDIR /usr/src/app
 
-COPY --from=builder /usr/src/app/package.json /usr/src/app/yarn.lock ./
-
-RUN yarn --prod --cache-folder /tmp/.junk && rm -rf /tmp/.junk
-
+COPY --from=builder /usr/src/app/node_modules ./node_modules/
 COPY --from=builder /usr/src/app/dist/ ./dist/
 
 CMD [ "node", "dist/main.js" ]
