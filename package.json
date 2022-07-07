@@ -9,7 +9,12 @@
     "format": "prettier -w ./src/",
     "lint": "eslint --ext ts ./src/",
     "build": "nest build",
-    "start": "nest start --config nest-cli.json"
+    "start": "nest start --config nest-cli.json",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "*.{ts,html,json,cjs}": "prettier -w",
+    "*.ts": "eslint"
   },
   "author": "",
   "license": "MIT",
@@ -22,6 +27,8 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.0.0",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
     "prettier": "^2.6.2",
     "typescript": "^4.7.3"
   },
