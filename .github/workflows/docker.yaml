@@ -23,5 +23,5 @@ jobs:
         with:
           context: ./
           push: true
-          tags: ghcr.io/bangumi-contrib:latest
+          tags: ghcr.io/trim21/bangumi-workers:latest
 
