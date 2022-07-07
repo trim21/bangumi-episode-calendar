@@ -1,7 +1,10 @@
 name: release
 
 on:
-  push
+  push:
+    branches:
+      - "**"
+      - "!renovate/**"
 
 jobs:
   docker:
