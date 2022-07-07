@@ -1,8 +1,7 @@
-import { randomUUID } from "crypto";
-
 import { AxiosError } from "axios";
 import pLimit from "p-limit";
 import { NotFoundException } from "@nestjs/common";
+import getUuid from "uuid-by-string";
 
 import { Collection, Episode, Paged, Subject } from "./bangumi";
 import { isNotNull } from "./util";
@@ -13,7 +12,6 @@ export async function buildICS(username: string, cache: Cache): Promise<string> 
   console.log("fetching episodes for user", username);
   try {
     let collections = await fetchAllUserCollection(username);
-    console.log(collections);
     const limit = pLimit(10);
 
     const subjects: SlimSubject[] = (
@@ -179,6 +177,8 @@ function renderICS(subjects: SlimSubject[]): string {
       }
 
       const event: Event = {
+        subjectID: subject.id,
+        episodeID: episode.id,
         start: date,
         end: [date[0], date[1], date[2] + 1],
         summary: `${subject.name_cn || subject.name} ${episode.sort}`,
@@ -197,6 +197,8 @@ function renderICS(subjects: SlimSubject[]): string {
 }
 
 interface Event {
+  subjectID: number;
+  episodeID: number;
   start: readonly [number, number, number];
   end: readonly [number, number, number];
   summary: string;
@@ -224,7 +226,7 @@ class ICalendar {
   createEvent(event: Event): void {
     this.lines.push(
       "BEGIN:VEVENT",
-      `UID:${generateUID()}`,
+      `UID:${generateUID(`subject-${event.subjectID}-episode-${event.episodeID}`)}`,
       `DTSTAMP:${formatDateObject(this.now)}`,
       `DTSTART;VALUE=DATE:${formatDate(event.start)}`,
       `DTEND;VALUE=DATE:${formatDate(event.end)}`,
@@ -263,6 +265,6 @@ function pad(n: number) {
   return n < 10 ? `0${n}` : `${n}`;
 }
 
-function generateUID(): string {
-  return randomUUID();
+function generateUID(summary: string): string {
+  return getUuid(summary);
 }

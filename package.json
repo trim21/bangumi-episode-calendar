@@ -43,7 +43,8 @@
     "ioredis": "^5.1.0",
     "p-limit": "^3.0.0",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.5.5"
+    "rxjs": "^7.5.5",
+    "uuid-by-string": "^3.0.7"
   },
   "prettier": {
     "printWidth": 120,
