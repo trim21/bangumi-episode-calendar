@@ -39,7 +39,7 @@
     "@nestjs/core": "^8.4.7",
     "@nestjs/platform-fastify": "^8.4.7",
     "axios": "^0.27.2",
-    "fastify": "^3.29.0",
+    "fastify": "^4.0.0",
     "ioredis": "^5.1.0",
     "p-limit": "^3.0.0",
     "reflect-metadata": "^0.1.13",
