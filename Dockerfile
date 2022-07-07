@@ -10,9 +10,9 @@ COPY tsconfig*.json nest-cli.json ./
 
 COPY src src/
 
-RUN yarn build && rm -rf node_modules tsconfig*.json nest-cli.json yarn.lock package.json
+RUN yarn build && rm -rf node_modules tsconfig*.json nest-cli.json
 
-RUN yarn --prod
+RUN yarn --prod && rm -rf yarn.lock package.json
 
 #####
 FROM node:lts-slim
