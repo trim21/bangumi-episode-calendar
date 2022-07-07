@@ -10,7 +10,7 @@ COPY tsconfig*.json nest-cli.json ./
 
 COPY src src/
 
-RUN yarn build && rm -rf node_modules tsconfig*.json nest-cli.json
+RUN yarn build && rm -rf node_modules tsconfig*.json nest-cli.json src
 
 RUN yarn --prod && ls -ahl && rm -rf yarn.lock package.json .husky
 
