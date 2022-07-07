@@ -207,40 +207,54 @@ interface Event {
 
 class ICalendar {
   private readonly name: string;
-  private readonly lines: string[];
   private readonly now: Date;
+  private readonly events: Event[];
 
   constructor(config: { name: string }) {
     this.name = config.name;
     this.now = new Date();
+    this.events = [];
+  }
 
-    this.lines = [
+  createEvent(event: Event): void {
+    this.events.push(event);
+  }
+
+  toString(): string {
+    this.events.sort((a, b): number => {
+      if (
+        a.start[0] * 100 * 100 + a.start[1] * 100 + a.start[2] >
+        b.start[0] * 100 * 100 + b.start[1] * 100 + b.start[2]
+      ) {
+        return 1;
+      }
+      return -1;
+    });
+
+    const lines: string[] = [
       "BEGIN:VCALENDAR",
       "VERSION:2.0",
       "PRODID:-//trim21//bangumi-icalendar//CN",
       `NAME:${this.name}`,
       `X-WR-CALNAME:${this.name}`,
     ];
-  }
 
-  createEvent(event: Event): void {
-    this.lines.push(
-      "BEGIN:VEVENT",
-      `UID:${generateUID(`subject-${event.subjectID}-episode-${event.episodeID}`)}`,
-      `DTSTAMP:${formatDateObject(this.now)}`,
-      `DTSTART;VALUE=DATE:${formatDate(event.start)}`,
-      `DTEND;VALUE=DATE:${formatDate(event.end)}`,
-      `SUMMARY:${event.summary}`,
-    );
-    if (event.description) {
-      this.lines.push(`DESCRIPTION:${event.description}`);
+    for (const event of this.events) {
+      lines.push(
+        "BEGIN:VEVENT",
+        `UID:${generateUID(`subject-${event.subjectID}-episode-${event.episodeID}`)}`,
+        `DTSTAMP:${formatDateObject(this.now)}`,
+        `DTSTART;VALUE=DATE:${formatDate(event.start)}`,
+        `DTEND;VALUE=DATE:${formatDate(event.end)}`,
+        `SUMMARY:${event.summary}`,
+      );
+      if (event.description) {
+        lines.push(`DESCRIPTION:${event.description}`);
+      }
     }
 
-    this.lines.push("END:VEVENT");
-  }
-
-  toString(): string {
-    return this.lines.join("\n") + "\nEND:VCALENDAR";
+    lines.push("END:VEVENT");
+    return lines.join("\n") + "\nEND:VCALENDAR";
   }
 }
 

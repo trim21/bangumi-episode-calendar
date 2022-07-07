@@ -18,6 +18,7 @@ export class AppController {
     if (!username) {
       return res.header("content-type", "text/html").send(bangumiCalendarHTML);
     }
+
     const cacheKey = `episode-calendar-v0-${username}`;
     const cached = await this.cache.get(cacheKey);
     if (cached) {
