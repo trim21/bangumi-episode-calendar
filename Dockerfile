@@ -12,7 +12,7 @@ COPY src src/
 
 RUN yarn build && rm -rf node_modules tsconfig*.json nest-cli.json
 
-RUN yarn --prod && rm -rf yarn.lock package.json
+RUN yarn --prod && ls -ahl && rm -rf yarn.lock package.json .husky
 
 #####
 FROM node:lts-slim
