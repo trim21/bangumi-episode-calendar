@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
 
-import axios, { AxiosError } from "axios";
 import { FastifyReply } from "fastify";
 import { Controller, Get, Inject, Query, Response } from "@nestjs/common";
 
@@ -29,33 +28,5 @@ export class AppController {
     const ics = await buildICS(username, this.cache);
     await this.cache.set(cacheKey, ics, 60 * 60 * 24);
     return res.send(ics);
-  }
-
-  @Get("/")
-  async getHello(): Promise<any> {
-    const subjectID = 8;
-    const key = `subject-v1-${subjectID}`;
-    const cached = await this.cache.get(key);
-    if (cached !== null) {
-      return cached;
-    }
-    try {
-      const res = await axios.get(`https://api.bgm.tv/v0/subjects/${subjectID}`, {
-        headers: {
-          "user-agent": "bangumi/contrib",
-        },
-      });
-      const data = res.data;
-
-      await this.cache.set(key, data, 60 * 60 * 24);
-
-      return data;
-    } catch (e) {
-      if (e instanceof AxiosError) {
-        return e.toJSON();
-      }
-
-      throw e;
-    }
   }
 }
