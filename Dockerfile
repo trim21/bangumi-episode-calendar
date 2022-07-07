@@ -1,4 +1,4 @@
-FROM node:lts-bullseye-slim as builder
+FROM node:lts-slim as builder
 
 WORKDIR /usr/src/app
 
@@ -6,12 +6,12 @@ COPY package.json yarn.lock ./
 
 RUN yarn
 
-COPY package.json yarn.lock src ./
+COPY tsconfig*.json src ./
 
 RUN yarn build
 
 #####
-FROM node:lts-bullseye-slim
+FROM node:lts-slim
 
 WORKDIR /usr/src/app
 
