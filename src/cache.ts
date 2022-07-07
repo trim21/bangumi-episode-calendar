@@ -6,10 +6,8 @@ import { Config } from "./config";
 @Injectable()
 export class Cache {
   private redis: Redis;
-  private readonly config: Config;
 
   constructor(@Inject(Config) config: Config) {
-    this.config = config;
     this.redis = new Redis({
       port: config.REDIS_PORT,
       host: config.REDIS_HOST,
