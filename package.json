@@ -1,0 +1,46 @@
+{
+  "name": "bangumi-contrib",
+  "version": "0.0.1",
+  "description": "",
+  "private": true,
+  "type": "commonjs",
+  "main": "dist/main.js",
+  "scripts": {
+    "format": "prettier -w ./src/",
+    "lint": "eslint --ext ts ./src/",
+    "build": "nest build",
+    "start": "nest start --config nest-cli.json"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^17.0.41",
+    "@typescript-eslint/eslint-plugin": "^5.27.0",
+    "@typescript-eslint/parser": "^5.27.1",
+    "eslint": "^8.17.0",
+    "eslint-import-resolver-typescript": "^2.7.1",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "prettier": "^2.6.2",
+    "typescript": "^4.7.3"
+  },
+  "dependencies": {
+    "@nestjs/cli": "^8.2.8",
+    "@nestjs/common": "^8.4.7",
+    "@nestjs/config": "^2.1.0",
+    "@nestjs/core": "^8.4.7",
+    "@nestjs/platform-fastify": "^8.4.7",
+    "axios": "^0.27.2",
+    "fastify": "^3.29.0",
+    "ioredis": "^5.1.0",
+    "p-limit": "^3.0.0",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.5.5"
+  },
+  "prettier": {
+    "printWidth": 120,
+    "tabWidth": 2,
+    "trailingComma": "all"
+  }
+}
