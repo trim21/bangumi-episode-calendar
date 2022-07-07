@@ -176,20 +176,14 @@ function renderICS(subjects: SlimSubject[]): string {
         continue;
       }
 
-      const event: Event = {
+      calendar.createEvent({
         subjectID: subject.id,
         episodeID: episode.id,
-        start: date,
-        end: [date[0], date[1], date[2] + 1],
+        start: formatDate(date),
+        end: formatDate([date[0], date[1], date[2] + 1]),
         summary: `${subject.name_cn || subject.name} ${episode.sort}`,
         description: episode.name || undefined,
-      };
-
-      try {
-        calendar.createEvent(event);
-      } catch (e) {
-        throw new Error(`failed to create event for ${subject.id} ${episode.id} ${JSON.stringify(event)}`);
-      }
+      });
     }
   }
 
@@ -199,8 +193,8 @@ function renderICS(subjects: SlimSubject[]): string {
 interface Event {
   subjectID: number;
   episodeID: number;
-  start: readonly [number, number, number];
-  end: readonly [number, number, number];
+  start: string;
+  end: string;
   summary: string;
   description?: string;
 }
@@ -222,13 +216,7 @@ class ICalendar {
 
   toString(): string {
     this.events.sort((a, b): number => {
-      if (
-        a.start[0] * 100 * 100 + a.start[1] * 100 + a.start[2] >
-        b.start[0] * 100 * 100 + b.start[1] * 100 + b.start[2]
-      ) {
-        return 1;
-      }
-      return -1;
+      return a.start.localeCompare(b.start);
     });
 
     const lines: string[] = [
@@ -244,8 +232,8 @@ class ICalendar {
         "BEGIN:VEVENT",
         `UID:${generateUID(`subject-${event.subjectID}-episode-${event.episodeID}`)}`,
         `DTSTAMP:${formatDateObject(this.now)}`,
-        `DTSTART;VALUE=DATE:${formatDate(event.start)}`,
-        `DTEND;VALUE=DATE:${formatDate(event.end)}`,
+        `DTSTART;VALUE=DATE:${event.start}`,
+        `DTEND;VALUE=DATE:${event.end}`,
         `SUMMARY:${event.summary}`,
       );
       if (event.description) {
