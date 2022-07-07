@@ -10,13 +10,11 @@ export class Cache {
 
   constructor(@Inject(Config) config: Config) {
     this.config = config;
-    const url = new URL(config.REDIS_URI);
     this.redis = new Redis({
-      port: parseInt(url.port, 10),
-      host: url.host.split(":")[0],
-      username: url.username,
-      password: url.password,
-      db: parseInt(url.pathname.slice(1), 10),
+      port: config.REDIS_PORT,
+      host: config.REDIS_HOST,
+      password: config.REDIS_PASSWORD,
+      db: config.REDIS_DB,
     });
   }
 
