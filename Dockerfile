@@ -6,7 +6,7 @@ COPY package.json yarn.lock ./
 
 RUN yarn
 
-COPY --from=builder package.json yarn.lock node_modules dist ./
+COPY package.json yarn.lock src ./
 
 RUN yarn build
 
