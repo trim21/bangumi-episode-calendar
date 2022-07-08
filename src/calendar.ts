@@ -217,7 +217,6 @@ class ICalendar {
   constructor(config: { name: string }) {
     this.name = config.name;
     this.now = new Date();
-    this.events = [];
     this.lines = [
       "BEGIN:VCALENDAR",
       "VERSION:2.0",
