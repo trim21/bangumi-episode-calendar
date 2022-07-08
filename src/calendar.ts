@@ -10,20 +10,28 @@ import { Cache } from "./cache";
 
 export async function buildICS(username: string, cache: Cache): Promise<string> {
   console.log("fetching episodes for user", username);
+  let collections: Array<Collection>;
   try {
-    let collections = await fetchAllUserCollection(username);
-    const limit = pLimit(10);
-
-    const subjects: SlimSubject[] = (
-      await Promise.all(collections.map((s) => limit(() => getSubjectInfo(s.subject_id, cache))))
-    )
-      .filter(isNotNull)
-      .filter((s) => s.future_episodes.length !== 0);
-
-    return renderICS(subjects);
+    collections = await fetchAllUserCollection(username);
   } catch (e) {
-    throw new NotFoundException();
+    if (e instanceof AxiosError) {
+      if (e.response?.status === 404) {
+        throw new NotFoundException();
+      }
+    }
+
+    throw e;
   }
+
+  const limit = pLimit(10);
+
+  const subjects: SlimSubject[] = (
+    await Promise.all(collections.map((s) => limit(() => getSubjectInfo(s.subject_id, cache))))
+  )
+    .filter(isNotNull)
+    .filter((s) => s.future_episodes.length !== 0);
+
+  return renderICS(subjects);
 }
 
 async function fetchAllUserCollection(username: string, pageSize: number = 50): Promise<Array<Collection>> {
