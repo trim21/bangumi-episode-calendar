@@ -16,7 +16,9 @@ export async function buildICS(username: string, cache: Cache): Promise<string> 
 
     const subjects: SlimSubject[] = (
       await Promise.all(collections.map((s) => limit(() => getSubjectInfo(s.subject_id, cache))))
-    ).filter(isNotNull);
+    )
+      .filter(isNotNull)
+      .filter((s) => s.future_episodes.length !== 0);
 
     return renderICS(subjects);
   } catch (e) {
@@ -211,46 +213,39 @@ class ICalendar {
   private readonly name: string;
   private readonly now: Date;
   private readonly events: Event[];
+  private readonly lines: string[];
 
   constructor(config: { name: string }) {
     this.name = config.name;
     this.now = new Date();
     this.events = [];
-  }
-
-  createEvent(event: Event): void {
-    this.events.push(event);
-  }
-
-  toString(): string {
-    this.events.sort((a, b): number => {
-      return a.start.localeCompare(b.start);
-    });
-
-    const lines: string[] = [
+    this.lines = [
       "BEGIN:VCALENDAR",
       "VERSION:2.0",
       "PRODID:-//trim21//bangumi-icalendar//CN",
       `NAME:${this.name}`,
       `X-WR-CALNAME:${this.name}`,
     ];
+  }
 
-    for (const event of this.events) {
-      lines.push(
-        "BEGIN:VEVENT",
-        `UID:${generateUID(`subject-${event.subjectID}-episode-${event.episodeID}`)}`,
-        `DTSTAMP:${formatDateObject(this.now)}`,
-        `DTSTART;VALUE=DATE:${event.start}`,
-        `DTEND;VALUE=DATE:${event.end}`,
-        `SUMMARY:${event.summary}`,
-      );
-      if (event.description) {
-        lines.push(`DESCRIPTION:${event.description}`);
-      }
+  createEvent(event: Event): void {
+    this.lines.push(
+      "BEGIN:VEVENT",
+      `UID:${generateUID(`subject-${event.subjectID}-episode-${event.episodeID}`)}`,
+      `DTSTAMP:${formatDateObject(this.now)}`,
+      `DTSTART;VALUE=DATE:${event.start}`,
+      `DTEND;VALUE=DATE:${event.end}`,
+      `SUMMARY:${event.summary}`,
+    );
+
+    if (event.description) {
+      this.lines.push(`DESCRIPTION:${event.description}`);
     }
+    this.lines.push("END:VEVENT");
+  }
 
-    lines.push("END:VEVENT");
-    return lines.join("\n") + "\nEND:VCALENDAR";
+  toString(): string {
+    return this.lines.join("\n") + "\nEND:VCALENDAR";
   }
 }
 
