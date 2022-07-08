@@ -54,23 +54,28 @@ async function fetchAllUserCollection(username: string, pageSize: number = 50): 
 
 interface SlimSubject {
   name: string;
-  name_cn: string;
   id: number;
   future_episodes: Array<ParsedEpisode>;
 }
 
 async function getSubjectInfo(subjectID: number, cache: Cache): Promise<SlimSubject | null> {
-  const cacheKey = `subject-v0-${subjectID}`;
+  const cacheKey = `subject-v1-${subjectID}`;
 
   const cached = await cache.get<SlimSubject>(cacheKey);
-  if (cached !== null) {
+  if (cached !== undefined) {
     return cached;
   }
 
-  let data;
+  let data: SlimSubject;
+  let total_episode = 0;
   try {
     const req = await client.get<Subject>(`subjects/${subjectID}`);
-    data = req.data;
+    total_episode = req.data.total_episodes;
+    data = {
+      id: req.data.id,
+      name: req.data.name_cn || req.data.name,
+      future_episodes: [],
+    };
   } catch (e: any) {
     if (e instanceof AxiosError) {
       if (e.response?.status === 404) {
@@ -81,21 +86,27 @@ async function getSubjectInfo(subjectID: number, cache: Cache): Promise<SlimSubj
     throw e;
   }
 
-  const episodes: Array<ParsedEpisode> = [];
-  if (data.total_episodes) {
-    episodes.push(...(await fetchAllEpisode(subjectID)));
+  if (total_episode) {
+    const all_episodes = await fetchAllEpisode(subjectID);
+
+    const future_episodes = all_episodes.filter((episode) => {
+      const today = new Date();
+      const ts = new Date(episode.air_date[0], episode.air_date[1] - 1, episode.air_date[2]);
+      return ts.getTime() > today.getTime();
+    });
+
+    if (all_episodes.length !== 0 && future_episodes.length === 0 && all_episodes.length <= 200) {
+      // no future episodes, just cache it longer than normal episode
+      await cache.set(cacheKey, data, 60 * 60 * 24 * 30);
+      return data;
+    }
+
+    data.future_episodes.push(...future_episodes);
   }
 
-  const result = {
-    id: data.id,
-    name_cn: data.name_cn,
-    name: data.name,
-    future_episodes: episodes,
-  };
+  await cache.set(cacheKey, data, 60 * 60 * 24 * 7);
 
-  await cache.set(cacheKey, result, 60 * 60 * 24 * 7);
-
-  return result;
+  return data;
 }
 
 interface ParsedEpisode {
@@ -108,7 +119,6 @@ interface ParsedEpisode {
 async function fetchAllEpisode(subjectID: number): Promise<Array<ParsedEpisode>> {
   const res = await _fetchAllEpisode(subjectID);
 
-  const today = new Date();
   return res
     .map((episode) => {
       const date: number[] = episode.airdate
@@ -120,13 +130,8 @@ async function fetchAllEpisode(subjectID: number): Promise<Array<ParsedEpisode>>
         return null;
       }
 
-      const ts = new Date(date[0], date[1] - 1, date[2]);
-      if (ts.getTime() < today.getTime() - 24 * 60 * 60 * 1000) {
-        return null;
-      }
-
       if (date[0] === null || date[1] === null || date[2] === null) {
-        throw new Error(`failed to parse episode for ${subjectID} ${episode.id}, ${episode.airdate}`);
+        return null;
       }
 
       return {
@@ -176,12 +181,15 @@ function renderICS(subjects: SlimSubject[]): string {
         continue;
       }
 
+      const end = new Date(date[0], date[1] - 1, date[2]);
+      end.setDate(end.getDate() + 1);
+
       calendar.createEvent({
         subjectID: subject.id,
         episodeID: episode.id,
         start: formatDate(date),
-        end: formatDate([date[0], date[1], date[2] + 1]),
-        summary: `${subject.name_cn || subject.name} ${episode.sort}`,
+        end: formatDate([end.getFullYear(), end.getMonth() + 1, end.getDate()]),
+        summary: `${subject.name} ${episode.sort}`,
         description: episode.name || undefined,
       });
     }

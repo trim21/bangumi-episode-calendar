@@ -20,11 +20,12 @@ export class Cache {
     await this.redis.set(key, JSON.stringify(value), "EX", ttlSeconds);
   }
 
-  async get<T>(key: string): Promise<T | null> {
+  async get<T>(key: string): Promise<T | undefined> {
     const raw = await this.redis.get(key);
-    if (!raw) {
-      return null;
+    if (raw === null) {
+      return undefined;
     }
+
     return JSON.parse(raw);
   }
 }
