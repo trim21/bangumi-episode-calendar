@@ -212,7 +212,6 @@ interface Event {
 class ICalendar {
   private readonly name: string;
   private readonly now: Date;
-  private readonly events: Event[];
   private readonly lines: string[];
 
   constructor(config: { name: string }) {
