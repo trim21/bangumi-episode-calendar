@@ -1,13 +1,13 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { default as Redis } from "ioredis";
 
 import { Config } from "./config";
 
 @Injectable()
 export class Cache {
-  private redis: Redis;
+  private readonly redis: Redis;
 
-  constructor(@Inject(Config) config: Config) {
+  constructor(config: Config) {
     this.redis = new Redis({
       port: config.REDIS_PORT,
       host: config.REDIS_HOST,

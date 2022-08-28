@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
-import pLimit from "p-limit";
+import * as pLimit from "p-limit";
 import { NotFoundException } from "@nestjs/common";
-import getUuid from "uuid-by-string";
+import * as getUuid from "uuid-by-string";
 
 import { Collection, Episode, Paged, Subject } from "./bangumi";
 import { isNotNull } from "./util";

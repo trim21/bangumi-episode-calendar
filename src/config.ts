@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
 @Injectable()
@@ -8,7 +8,7 @@ export class Config {
   public readonly REDIS_DB: number;
   public readonly REDIS_PASSWORD: string;
 
-  constructor(@Inject(ConfigService) configService: ConfigService) {
+  constructor(configService: ConfigService) {
     this.REDIS_HOST = configService.get<string>("REDIS_HOST") ?? "127.0.0.1";
     this.REDIS_PORT = configService.get<number>("REDIS_PORT") ?? 6379;
     this.REDIS_DB = configService.get<number>("REDIS_DB") ?? 0;

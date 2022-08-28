@@ -1,8 +1,8 @@
-import fs from "fs";
-import path from "path";
+import * as fs from "fs";
+import * as path from "path";
 
 import { FastifyReply } from "fastify";
-import { Controller, Get, Inject, Query, Response } from "@nestjs/common";
+import { Controller, Get, Query, Response } from "@nestjs/common";
 
 import { Cache } from "./cache";
 import { buildICS } from "./calendar";
@@ -11,7 +11,11 @@ const bangumiCalendarHTML = fs.readFileSync(path.join(__dirname, "./bangumi-cale
 
 @Controller()
 export class AppController {
-  constructor(@Inject(Cache) private readonly cache: Cache) {}
+  constructor(private readonly cache: Cache) {
+    if (this.cache === undefined) {
+      throw new Error("no cache");
+    }
+  }
 
   @Get("/episode-calendar")
   async episodeCalendar(@Query("username") username: string, @Response() res: FastifyReply): Promise<any> {
