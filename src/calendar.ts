@@ -4,7 +4,6 @@ import { NotFoundException } from "@nestjs/common";
 import * as getUuid from "uuid-by-string";
 
 import { Collection, Episode, Paged, Subject } from "./bangumi";
-import { isNotNull } from "./util";
 import { client } from "./request";
 import { Cache } from "./cache";
 
@@ -28,7 +27,7 @@ export async function buildICS(username: string, cache: Cache): Promise<string> 
   const subjects: SlimSubject[] = (
     await Promise.all(collections.map((s) => limit(() => getSubjectInfo(s.subject_id, cache))))
   )
-    .filter(isNotNull)
+    .filter((x) => x !== null)
     .filter((s) => s.future_episodes.length !== 0);
 
   return renderICS(subjects);
@@ -135,7 +134,7 @@ async function fetchAllEpisode(subjectID: number): Promise<Array<ParsedEpisode>>
         .split("-")
         .map((x) => parseInt(x, 10))
         .filter((x) => !isNaN(x))
-        .filter(isNotNull);
+        .filter((x) => x !== null);
       if (date.length != 3) {
         return null;
       }
@@ -151,7 +150,7 @@ async function fetchAllEpisode(subjectID: number): Promise<Array<ParsedEpisode>>
         air_date: [date[0], date[1], date[2]] as const,
       };
     })
-    .filter(isNotNull);
+    .filter((x) => x !== null);
 }
 
 async function _fetchAllEpisode(subjectID: number, pageSize: number = 200): Promise<Array<Episode>> {
