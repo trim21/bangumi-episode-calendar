@@ -21,4 +21,4 @@ WORKDIR /usr/src/app
 
 COPY --from=builder /usr/src/app/ ./
 
-CMD [ "node", "dist/main.js" ]
+ENTRYPOINT [ "node", "dist/main.js" ]
