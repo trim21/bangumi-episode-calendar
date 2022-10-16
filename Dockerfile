@@ -1,4 +1,4 @@
-FROM node:lts-slim as builder
+FROM node:18-slim as builder
 
 WORKDIR /usr/src/app
 
@@ -15,7 +15,7 @@ RUN yarn build && rm -rf node_modules tsconfig*.json nest-cli.json src
 RUN yarn --prod && ls -ahl && rm -rf yarn.lock .husky
 
 #####
-FROM node:lts-slim
+FROM node:18-slim
 
 WORKDIR /usr/src/app
 

@@ -13,10 +13,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node: ["16"]
-
     name: Node ${{ matrix.node }}
 
     steps:
@@ -25,7 +21,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node }}
+          node-version: '18'
           cache: yarn
 
       - run: yarn
