@@ -1,10 +1,10 @@
 import pLimit from "p-limit";
-import getUuid from "uuid-by-string";
 import { NotFoundException } from "@nestjs/common";
 
 import type { Collection, Episode, Paged, Subject } from "./bangumi";
 import type { Cache } from "./cache";
 import { fetch } from "./request";
+import { uuidByString } from "./util";
 
 export async function buildICS(username: string, cache: Cache): Promise<string> {
   console.log("fetching episodes for user", username);
@@ -268,5 +268,5 @@ function pad(n: number) {
 }
 
 function generateUID(summary: string): string {
-  return getUuid(summary);
+  return uuidByString(summary);
 }
