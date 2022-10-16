@@ -1,26 +1,14 @@
-import { AxiosError } from "axios";
-import * as pLimit from "p-limit";
+import pLimit from "p-limit";
+import getUuid from "uuid-by-string";
 import { NotFoundException } from "@nestjs/common";
-import * as getUuid from "uuid-by-string";
 
-import { Collection, Episode, Paged, Subject } from "./bangumi";
-import { client } from "./request";
-import { Cache } from "./cache";
+import type { Collection, Episode, Paged, Subject } from "./bangumi";
+import type { Cache } from "./cache";
+import { fetch } from "./request";
 
 export async function buildICS(username: string, cache: Cache): Promise<string> {
   console.log("fetching episodes for user", username);
-  let collections: Array<Collection>;
-  try {
-    collections = await fetchAllUserCollection(username);
-  } catch (e) {
-    if (e instanceof AxiosError) {
-      if (e.response?.status === 404) {
-        throw new NotFoundException();
-      }
-    }
-
-    throw e;
-  }
+  let collections: Array<Collection> = await fetchAllUserCollection(username);
 
   const limit = pLimit(10);
 
@@ -40,15 +28,19 @@ async function fetchAllUserCollection(username: string, pageSize: number = 50): 
     let offset: number = 0;
     let res: Paged<Collection>;
     do {
-      const req = await client.get<Paged<Collection>>(`users/${username}/collections`, {
-        params: {
-          type: collectionType,
-          offset,
-          limit: pageSize,
-        },
+      const qs = new URLSearchParams({
+        type: collectionType.toString(),
+        offset: offset.toString(),
+        limit: pageSize.toString(),
       });
 
-      res = req.data;
+      const req = await fetch(`https://api.bgm.tv/v0/users/${username}/collections?${qs.toString()}`);
+
+      if (req.status === 404) {
+        throw new NotFoundException();
+      }
+
+      res = (await req.json()) as Paged<Collection>;
 
       data.push(
         ...res.data.filter((c) => c.subject_type === SubjectTypeAnime || c.subject_type === SubjectTypeEpisode),
@@ -77,23 +69,19 @@ async function getSubjectInfo(subjectID: number, cache: Cache): Promise<SlimSubj
 
   let data: SlimSubject;
   let total_episode = 0;
-  try {
-    const req = await client.get<Subject>(`subjects/${subjectID}`);
-    total_episode = req.data.total_episodes;
-    data = {
-      id: req.data.id,
-      name: req.data.name_cn || req.data.name,
-      future_episodes: [],
-    };
-  } catch (e: any) {
-    if (e instanceof AxiosError) {
-      if (e.response?.status === 404) {
-        await cache.set(cacheKey, null, 60 * 60 * 24);
-        return null;
-      }
-    }
-    throw e;
+
+  const req = await fetch(`https://api.bgm.tv/v0/subjects/${subjectID}`);
+  if (req.status === 404) {
+    await cache.set(cacheKey, null, 60 * 60 * 24);
+    return null;
   }
+  const s = (await req.json()) as Subject;
+  total_episode = s.total_episodes;
+  data = {
+    id: s.id,
+    name: s.name_cn || s.name,
+    future_episodes: [],
+  };
 
   if (total_episode) {
     const all_episodes = await fetchAllEpisode(subjectID);
@@ -159,11 +147,15 @@ async function _fetchAllEpisode(subjectID: number, pageSize: number = 200): Prom
   let res: Paged<Episode>;
 
   do {
-    const req = await client.get<Paged<Episode>>("episodes", {
-      params: { subject_id: subjectID, offset, limit: pageSize },
+    const qs = new URLSearchParams({
+      subject_id: subjectID.toString(),
+      offset: offset.toString(),
+      limit: pageSize.toString(),
     });
 
-    res = req.data;
+    const req = await fetch(`https://api.bgm.tv/v0/episodes?${qs.toString()}`);
+
+    res = (await req.json()) as Paged<Episode>;
 
     data.push(...res.data);
 

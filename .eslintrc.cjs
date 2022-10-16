@@ -23,6 +23,7 @@ module.exports = {
     "array-bracket-newline": ["error", "consistent"],
     "promise/catch-or-return": ["error", { allowFinally: true }],
     "@typescript-eslint/object-curly-spacing": ["error", "always"],
+    "@typescript-eslint/consistent-type-imports": ["error", { prefer: "type-imports" }],
     "@typescript-eslint/quotes": ["error", "double", { avoidEscape: true }],
     quotes: ["error", "double", { avoidEscape: true }],
     "@typescript-eslint/member-delimiter-style": [

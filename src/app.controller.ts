@@ -1,11 +1,15 @@
 import * as fs from "fs";
 import * as path from "path";
+import * as url from "url";
 
 import { FastifyReply } from "fastify";
 import { Controller, Get, Query, Response } from "@nestjs/common";
 
 import { Cache } from "./cache";
 import { buildICS } from "./calendar";
+
+const __filename = url.fileURLToPath(new URL(".", import.meta.url));
+const __dirname = path.basename(__filename);
 
 const bangumiCalendarHTML = fs.readFileSync(path.join(__dirname, "./bangumi-calendar.html"), { encoding: "utf-8" });
 
