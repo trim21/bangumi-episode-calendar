@@ -37,7 +37,7 @@ async function fetchAllUserCollection(username: string, pageSize: number = 50): 
       const req = await fetch(`https://api.bgm.tv/v0/users/${username}/collections?${qs.toString()}`);
 
       if (req.status === 404) {
-        throw new NotFoundException();
+        throw new NotFoundException("user not found");
       }
 
       res = (await req.json()) as Paged<Collection>;
