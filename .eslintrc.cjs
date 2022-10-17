@@ -4,6 +4,7 @@ module.exports = {
     "plugin:import/recommended",
     "plugin:import/typescript",
     "plugin:promise/recommended",
+    "plugin:n/recommended",
   ],
   plugins: ["@typescript-eslint", "import"],
   parser: "@typescript-eslint/parser",
@@ -17,6 +18,7 @@ module.exports = {
     node: true,
   },
   rules: {
+    "n/no-missing-import": "off",
     "linebreak-style": ["error", "unix"],
     indent: ["error", 2],
     "array-element-newline": ["error", "consistent"],

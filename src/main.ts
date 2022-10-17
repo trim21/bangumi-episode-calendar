@@ -10,6 +10,5 @@ async function bootstrap() {
 }
 
 bootstrap().catch((e) => {
-  console.error(e);
-  process.exit(1);
+  throw e;
 });

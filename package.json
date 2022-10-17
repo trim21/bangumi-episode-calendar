@@ -5,6 +5,9 @@
   "private": true,
   "type": "module",
   "main": "dist/main.js",
+  "engines": {
+    "node": "^18.0.0"
+  },
   "scripts": {
     "format": "prettier -w ./src/",
     "lint": "eslint --ext ts ./src/",
@@ -26,6 +29,7 @@
     "eslint": "^8.26.0",
     "eslint-import-resolver-typescript": "^3.5.2",
     "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.3.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
     "husky": "^8.0.1",
