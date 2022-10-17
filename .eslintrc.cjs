@@ -75,7 +75,7 @@ module.exports = {
       },
     ],
     "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": ["error"],
+    "@typescript-eslint/no-unused-vars": ["error", { varsIgnorePattern: "_" }],
     "@typescript-eslint/strict-boolean-expressions": "off",
     "import/order": [
       "error",

@@ -3,7 +3,7 @@ import { NotFoundException } from "@nestjs/common";
 
 import type { Collection, Episode, Paged, Subject } from "./bangumi";
 import type { Cache } from "./cache";
-import { get } from "./request";
+import { consumeBody, get } from "./request";
 import { uuidByString } from "./util";
 
 export async function buildICS(username: string, cache: Cache): Promise<string> {
@@ -34,9 +34,10 @@ async function fetchAllUserCollection(username: string, pageSize: number = 50): 
         limit: pageSize.toString(),
       });
 
-      const { body, statusCode } = await get(`https://api.bgm.tv/v0/users/${username}/collections?${qs.toString()}`);
+      const { body, statusCode } = await get(`/v0/users/${username}/collections?${qs.toString()}`);
 
       if (statusCode === 404) {
+        consumeBody(body);
         throw new NotFoundException("user not found");
       }
 
@@ -70,8 +71,9 @@ async function getSubjectInfo(subjectID: number, cache: Cache): Promise<SlimSubj
   let data: SlimSubject;
   let total_episode = 0;
 
-  const { body, statusCode } = await get(`https://api.bgm.tv/v0/subjects/${subjectID}`);
+  const { body, statusCode } = await get(`/v0/subjects/${subjectID}`);
   if (statusCode === 404) {
+    consumeBody(body);
     await cache.set(cacheKey, null, 60 * 60 * 24);
     return null;
   }
@@ -153,9 +155,10 @@ async function _fetchAllEpisode(subjectID: number, pageSize: number = 200): Prom
       limit: pageSize.toString(),
     });
 
-    const { statusCode, body } = await get(`https://api.bgm.tv/v0/episodes?${qs.toString()}`);
+    const { statusCode, body } = await get(`/v0/episodes?${qs.toString()}`);
 
     if (statusCode !== 200) {
+      consumeBody(body);
       throw new Error(`unexpected error ${statusCode} ${await body.text()}`);
     }
 
