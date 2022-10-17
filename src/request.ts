@@ -1,14 +1,14 @@
-import type { Response, RequestInit, RequestInfo } from "node-fetch";
-import nodeFetch from "node-fetch";
+import { request } from "undici";
+import type { ResponseData } from "undici/types/dispatcher";
 
 const commonHeader = { "user-agent": "trim21/bangumi/workers" } as const;
 
-export function fetch(url: RequestInfo, init?: RequestInit): Promise<Response> {
-  if (init === undefined) {
-    init = { headers: commonHeader };
-  } else {
-    init.headers = Object.assign(init.headers ?? {}, commonHeader);
-  }
+export function get(url: string, headers?: Record<string, string>): Promise<ResponseData> {
+  return req("GET", url, headers);
+}
 
-  return nodeFetch(url, init);
+function req(method: "GET" | "POST", url: string, headers?: Record<string, string>): Promise<ResponseData> {
+  headers = Object.assign(headers ?? {}, commonHeader);
+
+  return request(url, { headers: headers, method });
 }

@@ -3,7 +3,7 @@ import { NotFoundException } from "@nestjs/common";
 
 import type { Collection, Episode, Paged, Subject } from "./bangumi";
 import type { Cache } from "./cache";
-import { fetch } from "./request";
+import { get } from "./request";
 import { uuidByString } from "./util";
 
 export async function buildICS(username: string, cache: Cache): Promise<string> {
@@ -34,13 +34,13 @@ async function fetchAllUserCollection(username: string, pageSize: number = 50): 
         limit: pageSize.toString(),
       });
 
-      const req = await fetch(`https://api.bgm.tv/v0/users/${username}/collections?${qs.toString()}`);
+      const { body, statusCode } = await get(`https://api.bgm.tv/v0/users/${username}/collections?${qs.toString()}`);
 
-      if (req.status === 404) {
+      if (statusCode === 404) {
         throw new NotFoundException("user not found");
       }
 
-      res = (await req.json()) as Paged<Collection>;
+      res = await body.json();
 
       data.push(
         ...res.data.filter((c) => c.subject_type === SubjectTypeAnime || c.subject_type === SubjectTypeEpisode),
@@ -70,12 +70,12 @@ async function getSubjectInfo(subjectID: number, cache: Cache): Promise<SlimSubj
   let data: SlimSubject;
   let total_episode = 0;
 
-  const req = await fetch(`https://api.bgm.tv/v0/subjects/${subjectID}`);
-  if (req.status === 404) {
+  const { body, statusCode } = await get(`https://api.bgm.tv/v0/subjects/${subjectID}`);
+  if (statusCode === 404) {
     await cache.set(cacheKey, null, 60 * 60 * 24);
     return null;
   }
-  const s = (await req.json()) as Subject;
+  const s = (await body.json()) as Subject;
   total_episode = s.total_episodes;
   data = {
     id: s.id,
@@ -153,9 +153,13 @@ async function _fetchAllEpisode(subjectID: number, pageSize: number = 200): Prom
       limit: pageSize.toString(),
     });
 
-    const req = await fetch(`https://api.bgm.tv/v0/episodes?${qs.toString()}`);
+    const { statusCode, body } = await get(`https://api.bgm.tv/v0/episodes?${qs.toString()}`);
 
-    res = (await req.json()) as Paged<Episode>;
+    if (statusCode !== 200) {
+      throw new Error(`unexpected error ${statusCode} ${await body.text()}`);
+    }
+
+    res = await body.json();
 
     data.push(...res.data);
 

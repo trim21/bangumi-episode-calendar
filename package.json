@@ -42,10 +42,10 @@
     "cross-env": "^7.0.3",
     "fastify": "^4.9.0",
     "ioredis": "^5.2.3",
-    "node-fetch": "^3.2.10",
     "p-limit": "^4.0.0",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.5.7"
+    "rxjs": "^7.5.7",
+    "undici": "^5.11.0"
   },
   "prettier": {
     "printWidth": 120,
