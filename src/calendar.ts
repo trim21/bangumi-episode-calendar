@@ -3,7 +3,7 @@ import { NotFoundException } from "@nestjs/common";
 
 import type { Collection, Episode, Paged, Subject } from "./bangumi";
 import type { Cache } from "./cache";
-import { consumeBody, get } from "./request";
+import { get } from "./request";
 import { uuidByString } from "./util";
 
 export async function buildICS(username: string, cache: Cache): Promise<string> {
@@ -28,16 +28,15 @@ async function fetchAllUserCollection(username: string, pageSize: number = 50): 
     let offset: number = 0;
     let res: Paged<Collection>;
     do {
-      const qs = new URLSearchParams({
-        type: collectionType.toString(),
-        offset: offset.toString(),
-        limit: pageSize.toString(),
+      const { body, statusCode } = await get(`/v0/users/${username}/collections`, {
+        query: {
+          type: collectionType,
+          offset,
+          limit: pageSize,
+        },
       });
 
-      const { body, statusCode } = await get(`/v0/users/${username}/collections?${qs.toString()}`);
-
       if (statusCode === 404) {
-        consumeBody(body);
         throw new NotFoundException("user not found");
       }
 
@@ -73,7 +72,6 @@ async function getSubjectInfo(subjectID: number, cache: Cache): Promise<SlimSubj
 
   const { body, statusCode } = await get(`/v0/subjects/${subjectID}`);
   if (statusCode === 404) {
-    consumeBody(body);
     await cache.set(cacheKey, null, 60 * 60 * 24);
     return null;
   }
@@ -149,16 +147,15 @@ async function _fetchAllEpisode(subjectID: number, pageSize: number = 200): Prom
   let res: Paged<Episode>;
 
   do {
-    const qs = new URLSearchParams({
-      subject_id: subjectID.toString(),
-      offset: offset.toString(),
-      limit: pageSize.toString(),
+    const { statusCode, body } = await get("/v0/episodes", {
+      query: {
+        subject_id: subjectID,
+        offset,
+        limit: pageSize,
+      },
     });
 
-    const { statusCode, body } = await get(`/v0/episodes?${qs.toString()}`);
-
     if (statusCode !== 200) {
-      consumeBody(body);
       throw new Error(`unexpected error ${statusCode} ${await body.text()}`);
     }
 

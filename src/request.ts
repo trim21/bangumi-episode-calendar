@@ -1,27 +1,23 @@
 import { Client } from "undici";
-import type { ResponseData } from "undici/types/dispatcher";
+import type { RequestOptions, ResponseData } from "undici/types/dispatcher";
 
 const commonHeader = { "user-agent": "trim21/bangumi/workers" } as const;
-
 const client = new Client("https://api.bgm.tv");
 
-export function get(path: string, headers?: Record<string, string>): Promise<ResponseData> {
-  return req("GET", path, headers);
+export function get(path: string, option?: Omit<RequestOptions, "method" | "path">): Promise<ResponseData> {
+  return req("GET", path, option);
 }
 
-/*
- * gc will free request conn, but it's better to make sure it's consumed so no gc pressure.
- * */
-export function consumeBody(body) {
-  (async () => {
-    // eslint-disable-next-line no-empty
-    for await (const _ of body) {
-    }
-  })();
-}
+function req(
+  method: "GET" | "POST",
+  path: string,
+  option?: Omit<RequestOptions, "method" | "path">,
+): Promise<ResponseData> {
+  if (option === undefined) {
+    option = { headers: commonHeader };
+  } else {
+    option.headers = Object.assign(option.headers ?? {}, commonHeader);
+  }
 
-function req(method: "GET" | "POST", path: string, headers?: Record<string, string>): Promise<ResponseData> {
-  headers = Object.assign(headers ?? {}, commonHeader);
-
-  return client.request({ path: path, method, headers });
+  return client.request({ ...option, path, method });
 }
