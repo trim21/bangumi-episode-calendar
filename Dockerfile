@@ -23,4 +23,4 @@ COPY --from=builder /usr/src/app/ ./
 
 ENV NODE_OPTIONS="--experimental-specifier-resolution=node"
 
-ENTRYPOINT [ "node", "dist/main.js" ]
+ENTRYPOINT [ "node", "--enable-source-maps", "dist/main.js" ]
