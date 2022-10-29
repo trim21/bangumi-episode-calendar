@@ -9,8 +9,8 @@
     "node": "^18.0.0"
   },
   "scripts": {
-    "format": "prettier -w ./src/",
-    "lint": "eslint --ext ts ./src/",
+    "format": "prettier -w ./",
+    "lint": "eslint --ext ts ./",
     "build": "nest build",
     "start": "cross-env NODE_OPTIONS=\"--experimental-specifier-resolution=node\" nest start --config nest-cli.json",
     "dev": "yarn start --watch",

@@ -27,4 +27,3 @@ jobs:
           context: ./
           push: true
           tags: ghcr.io/trim21/bangumi-workers:latest
-

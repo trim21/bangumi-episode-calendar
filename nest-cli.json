@@ -1,8 +1,6 @@
 {
   "compilerOptions": {
-    "assets": [
-      "**/*.html"
-    ],
+    "assets": ["**/*.html"],
     "watchAssets": true
   }
 }
