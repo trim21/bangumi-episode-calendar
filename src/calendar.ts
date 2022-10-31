@@ -60,7 +60,7 @@ interface SlimSubject {
 }
 
 async function getSubjectInfo(subjectID: number, cache: Cache): Promise<SlimSubject | null> {
-  const cacheKey = `subject-v1-${subjectID}`;
+  const cacheKey = `subject-v2-${subjectID}`;
 
   const cached = await cache.get<SlimSubject>(cacheKey);
   if (cached !== undefined) {
@@ -111,6 +111,7 @@ interface ParsedEpisode {
   sort: number;
   name: string;
   air_date: readonly [number, number, number];
+  duration: string;
 }
 
 async function fetchAllEpisode(subjectID: number): Promise<Array<ParsedEpisode>> {
@@ -136,6 +137,7 @@ async function fetchAllEpisode(subjectID: number): Promise<Array<ParsedEpisode>>
         sort: episode.sort,
         name: episode.name_cn || episode.name,
         air_date: [date[0], date[1], date[2]] as const,
+        duration: episode.duration,
       };
     })
     .filter((x) => x !== null);
@@ -196,6 +198,7 @@ function renderICS(subjects: SlimSubject[]): string {
         end: formatDate([end.getFullYear(), end.getMonth() + 1, end.getDate()]),
         summary: `${subject.name} ${episode.sort}`,
         description: episode.name || undefined,
+        duration: episode.duration,
       });
     }
   }
@@ -210,6 +213,7 @@ interface Event {
   end: string;
   summary: string;
   description?: string;
+  duration: string;
 }
 
 class ICalendar {
@@ -240,7 +244,7 @@ class ICalendar {
     );
 
     if (event.description) {
-      this.lines.push(`DESCRIPTION:${event.description}`);
+      this.lines.push(`DESCRIPTION:${event.description}${event.duration === "" ? "" : "\\n时长：" + event.duration}`);
     }
     this.lines.push("END:VEVENT");
   }
