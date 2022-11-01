@@ -243,9 +243,20 @@ class ICalendar {
       `SUMMARY:${event.summary}`,
     );
 
+    let description = [];
+
     if (event.description) {
-      this.lines.push(`DESCRIPTION:${event.description}${event.duration === "" ? "" : "\\n时长：" + event.duration}`);
+      description.push(event.description);
     }
+
+    if (event.duration) {
+      description.push("时长：" + event.duration);
+    }
+
+    if (description.length) {
+      this.lines.push(`DESCRIPTION:${description.join("\\n")}`);
+    }
+
     this.lines.push("END:VEVENT");
   }
 
