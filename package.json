@@ -12,7 +12,7 @@
     "format": "prettier -w ./",
     "lint": "eslint --ext ts ./",
     "build": "nest build",
-    "start": "cross-env NODE_OPTIONS=\"--experimental-specifier-resolution=node\" nest start --config nest-cli.json",
+    "start": "cross-env NODE_OPTIONS=\"--enable-source-maps --experimental-specifier-resolution=node\" nest start --config nest-cli.json",
     "dev": "yarn start --watch",
     "prepare": "husky install"
   },

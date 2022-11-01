@@ -254,7 +254,7 @@ class ICalendar {
     }
 
     if (description.length) {
-      this.lines.push(`DESCRIPTION:${description.join("\\n")}`);
+      this.lines.push(`DESCRIPTION:${description.join("\\n\\n")}`);
     }
 
     this.lines.push("END:VEVENT");
