@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 
-import { AppController } from "./app.controller";
+import { AppController } from "./controller";
 import { Cache } from "./cache";
 import { Config } from "./config";
 
