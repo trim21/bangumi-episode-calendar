@@ -11,6 +11,8 @@
     "esModuleInterop": false,
     "target": "ES2022",
     "sourceMap": true,
+    "noUncheckedIndexedAccess": true,
+    "strictNullChecks": true,
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,

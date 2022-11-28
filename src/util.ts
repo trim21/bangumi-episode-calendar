@@ -5,3 +5,7 @@ export function uuidByString(v: string): string {
 
   return `${s.slice(0, 8)}-${s.slice(8, 12)}-${s.slice(12, 16)}-${s.slice(16, 20)}-${s.slice(20, 32)}`;
 }
+
+export function notNull<T>(x: T): x is Exclude<T, null> {
+  return x !== null;
+}

@@ -4,7 +4,7 @@ import { NotFoundException } from "@nestjs/common";
 import type { Collection, Episode, Paged, Subject } from "@/bangumi";
 import type { Cache } from "@/cache";
 import { get } from "@/request";
-import { uuidByString } from "@/util";
+import { notNull, uuidByString } from "@/util";
 import { logger } from "@/logger";
 
 export async function buildICS(username: string, cache: Cache): Promise<string> {
@@ -16,7 +16,7 @@ export async function buildICS(username: string, cache: Cache): Promise<string> 
   const subjects: SlimSubject[] = (
     await Promise.all(collections.map((s) => limit(() => getSubjectInfo(s.subject_id, cache))))
   )
-    .filter((x) => x !== null)
+    .filter(notNull)
     .filter((s) => s.future_episodes.length !== 0);
 
   return renderICS(subjects);
@@ -42,7 +42,7 @@ async function fetchAllUserCollection(username: string, pageSize: number = 50): 
           throw new NotFoundException("user not found");
         }
 
-        throw new Error(`Unexpected HTTP ERROR ${body}`);
+        throw new Error(`Unexpected HTTP ERROR ${res.body}`);
       }
 
       body = JSON.parse(res.body) as Paged<Collection>;
@@ -125,7 +125,7 @@ async function fetchAllEpisode(subjectID: number): Promise<Array<ParsedEpisode>>
   const res = await _fetchAllEpisode(subjectID);
 
   return res
-    .map((episode) => {
+    .map((episode): ParsedEpisode | null => {
       const date: number[] = episode.airdate
         .split("-")
         .map((x) => parseInt(x, 10))
@@ -135,7 +135,9 @@ async function fetchAllEpisode(subjectID: number): Promise<Array<ParsedEpisode>>
         return null;
       }
 
-      if (date[0] === null || date[1] === null || date[2] === null) {
+      const [year, month, day] = date;
+
+      if (year === undefined || month === undefined || day === undefined) {
         return null;
       }
 
@@ -143,11 +145,11 @@ async function fetchAllEpisode(subjectID: number): Promise<Array<ParsedEpisode>>
         id: episode.id,
         sort: episode.sort,
         name: episode.name_cn || episode.name,
-        air_date: [date[0], date[1], date[2]] as const,
+        air_date: [year, month, day],
         duration: episode.duration,
       };
     })
-    .filter((x) => x !== null);
+    .filter(notNull);
 }
 
 async function _fetchAllEpisode(subjectID: number, pageSize: number = 200): Promise<Array<Episode>> {
@@ -250,7 +252,7 @@ class ICalendar {
       `SUMMARY:${event.summary}`,
     );
 
-    let description = [];
+    let description: string[] = [];
 
     if (event.description) {
       description.push(event.description);
