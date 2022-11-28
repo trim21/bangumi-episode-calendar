@@ -9,7 +9,7 @@ import { Cache } from "@/cache";
 import { buildICS } from "@/calendar";
 
 const __filename = url.fileURLToPath(new URL(".", import.meta.url));
-const __dirname = path.basename(__filename);
+const __dirname = path.dirname(__filename);
 
 const bangumiCalendarHTML = fs.readFileSync(path.join(__dirname, "./bangumi-calendar.html"), { encoding: "utf-8" });
 
