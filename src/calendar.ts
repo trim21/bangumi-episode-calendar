@@ -8,7 +8,7 @@ import { uuidByString } from "@/util";
 import { logger } from "@/logger";
 
 export async function buildICS(username: string, cache: Cache): Promise<string> {
-  logger.info(`fetching episodes for user ${username}`);
+  logger.info(`fetching collection of user ${username}`);
   let collections: Array<Collection> = await fetchAllUserCollection(username);
 
   const limit = pLimit(10);
