@@ -1,10 +1,10 @@
 import pLimit from "p-limit";
 import { NotFoundException } from "@nestjs/common";
 
-import type { Collection, Episode, Paged, Subject } from "./bangumi";
-import type { Cache } from "./cache";
-import { get } from "./request";
-import { uuidByString } from "./util";
+import type { Collection, Episode, Paged, Subject } from "@/bangumi";
+import type { Cache } from "@/cache";
+import { get } from "@/request";
+import { uuidByString } from "@/util";
 
 export async function buildICS(username: string, cache: Cache): Promise<string> {
   console.log("fetching episodes for user", username);

@@ -5,8 +5,8 @@ import * as url from "url";
 import { FastifyReply } from "fastify";
 import { Controller, Get, Query, Response } from "@nestjs/common";
 
-import { Cache } from "./cache";
-import { buildICS } from "./calendar";
+import { Cache } from "@/cache";
+import { buildICS } from "@/calendar";
 
 const __filename = url.fileURLToPath(new URL(".", import.meta.url));
 const __dirname = path.basename(__filename);

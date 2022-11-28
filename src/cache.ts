@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { default as Redis } from "ioredis";
 
-import { Config } from "./config";
+import { Config } from "@/config";
 
 @Injectable()
 export class Cache {
