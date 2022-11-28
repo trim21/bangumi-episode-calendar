@@ -7,6 +7,10 @@ interface Res {
   ok: boolean;
 }
 
+interface CommonReq {
+  query?: OptionsInit["searchParams"];
+}
+
 const commonHeader = { "user-agent": "trim21/bangumi/workers" } as const;
 
 const g = got.extend({
@@ -15,7 +19,7 @@ const g = got.extend({
   http2: true,
 });
 
-export async function get(path: string, option: { query?: OptionsInit["searchParams"] } = {}): Promise<Res> {
+export async function get(path: string, option: CommonReq = {}): Promise<Res> {
   const res = await g.get(path, {
     throwHttpErrors: false,
     searchParams: option.query,
