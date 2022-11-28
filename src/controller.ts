@@ -10,7 +10,7 @@ import { buildICS } from "@/calendar";
 
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 
-const bangumiCalendarHTML = fs.readFileSync(path.join(__dirname, "./bangumi-calendar.html"), { encoding: "utf-8" });
+const bangumiCalendarHTML = fs.readFileSync(path.join(__dirname, "./bangumi-calendar.html"));
 
 @Controller()
 export class AppController {

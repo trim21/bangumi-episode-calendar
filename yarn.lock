@@ -2947,12 +2947,19 @@ pino-abstract-transport@v1.0.0:
     readable-stream "^4.0.0"
     split2 "^4.0.0"
 
+pino-caller@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/pino-caller/-/pino-caller-3.2.0.tgz#f248303a493b6f3a10d9f9273cf1b3c5fa5a6482"
+  integrity sha512-44T2o5CynyLSR4URaD7T2yLZIGgfubTWUImT9JTyQIROwGhz3c1b9Kgd7OqgKmVpIkUsSQLzqRY/JwPZgveLeA==
+  dependencies:
+    source-map-support "^0.5.13"
+
 pino-std-serializers@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/pino-std-serializers/-/pino-std-serializers-6.0.0.tgz#4c20928a1bafca122fdc2a7a4a171ca1c5f9c526"
   integrity sha512-mMMOwSKrmyl+Y12Ri2xhH1lbzQxwwpuru9VjyJpgFIH4asSj88F2csdMwN6+M5g1Ll4rmsYghHLQJw81tgZ7LQ==
 
-pino@^8.5.0:
+pino@^8.5.0, pino@^8.7.0:
   version "8.7.0"
   resolved "https://registry.yarnpkg.com/pino/-/pino-8.7.0.tgz#58621608a3d8540ae643cdd9194cdd94130c78d9"
   integrity sha512-l9sA5uPxmZzwydhMWUcm1gI0YxNnYl8MfSr2h8cwLvOAzQLBLewzF247h/vqHe3/tt6fgtXeG9wdjjoetdI/vA==
@@ -3340,7 +3347,7 @@ sonic-boom@^3.1.0:
   dependencies:
     atomic-sleep "^1.0.0"
 
-source-map-support@0.5.21, source-map-support@~0.5.20:
+source-map-support@0.5.21, source-map-support@^0.5.13, source-map-support@~0.5.20:
   version "0.5.21"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.21.tgz#04fe7c7f9e1ed2d662233c28cb2b35b9f63f6e4f"
   integrity sha512-uBHU3L3czsIyYXKX88fdrGovxdSCoTGDRZ6SYXtSRxLZUzHg5P/66Ht6uoUlHu9EZod+inXhKo3qQgwXUT/y1w==

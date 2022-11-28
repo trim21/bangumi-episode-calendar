@@ -3,12 +3,9 @@ import { NestFactory } from "@nestjs/core";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 
 import { AppModule } from "@/module";
+import { logger } from "@/logger";
 
-async function bootstrap() {
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
-  await app.listen(3000, "0.0.0.0");
-}
+const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
+await app.listen(3000, "0.0.0.0");
 
-bootstrap().catch((e) => {
-  throw e;
-});
+logger.info("server started");

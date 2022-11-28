@@ -5,9 +5,10 @@ import type { Collection, Episode, Paged, Subject } from "@/bangumi";
 import type { Cache } from "@/cache";
 import { get } from "@/request";
 import { uuidByString } from "@/util";
+import { logger } from "@/logger";
 
 export async function buildICS(username: string, cache: Cache): Promise<string> {
-  console.log("fetching episodes for user", username);
+  logger.info("fetching episodes for user %s", username);
   let collections: Array<Collection> = await fetchAllUserCollection(username);
 
   const limit = pLimit(10);
@@ -74,6 +75,7 @@ async function getSubjectInfo(subjectID: number, cache: Cache): Promise<SlimSubj
   let data: SlimSubject;
   let total_episode = 0;
 
+  logger.info("fetching subject %d", subjectID);
   const { body, code } = await get(`v0/subjects/${subjectID}`);
   if (code === 404) {
     await cache.set(cacheKey, null, 60 * 60 * 24);
