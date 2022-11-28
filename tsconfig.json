@@ -1,14 +1,5 @@
 {
   "compilerOptions": {
-    "plugins": [
-      {
-        "transform": "@build-script/typescript-transformer-dual-package"
-      },
-      // Transform paths in output .js files
-      {
-        "transform": "typescript-transform-paths"
-      }
-    ],
     "module": "ES2022",
     "moduleResolution": "Node",
     "declaration": true,
