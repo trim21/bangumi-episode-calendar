@@ -12,12 +12,13 @@
     "format": "prettier -w ./",
     "lint": "eslint --ext ts ./",
     "build": "nest build",
+    "build2": "cross-env NODE_OPTIONS=\"--enable-source-maps --max-old-space-size=4096 --max-old-space-size=4096 --inspect\" ttsc",
     "start": "cross-env NODE_OPTIONS=\"--enable-source-maps --experimental-specifier-resolution=node\" nest start --config nest-cli.json",
     "dev": "yarn start --watch",
     "prepare": "husky install"
   },
   "lint-staged": {
-    "*.{ts,html,json,cjs}": "prettier -w",
+    "*.{ts,html,json,cjs,mjs,js}": "prettier -w",
     "*.ts": "eslint --fix"
   },
   "author": "",
@@ -45,11 +46,11 @@
     "@nestjs/platform-fastify": "^9.2.0",
     "cross-env": "^7.0.3",
     "fastify": "^4.10.2",
+    "got": "^12.5.3",
     "ioredis": "^5.2.4",
     "p-limit": "^4.0.0",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.5.7",
-    "undici": "^5.12.0"
+    "rxjs": "^7.5.7"
   },
   "prettier": {
     "printWidth": 120,

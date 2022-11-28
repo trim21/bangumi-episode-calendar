@@ -26,9 +26,9 @@ async function fetchAllUserCollection(username: string, pageSize: number = 50): 
 
   for (const collectionType of [1, 3]) {
     let offset: number = 0;
-    let res: Paged<Collection>;
+    let body: Paged<Collection>;
     do {
-      const { body, statusCode } = await get(`/v0/users/${username}/collections`, {
+      const res = await get(`v0/users/${username}/collections`, {
         query: {
           type: collectionType,
           offset,
@@ -36,18 +36,22 @@ async function fetchAllUserCollection(username: string, pageSize: number = 50): 
         },
       });
 
-      if (statusCode === 404) {
-        throw new NotFoundException("user not found");
+      if (!res.ok) {
+        if (res.code === 404) {
+          throw new NotFoundException("user not found");
+        }
+
+        throw new Error(`Unexpected HTTP ERROR ${body}`);
       }
 
-      res = await body.json();
+      body = JSON.parse(res.body) as Paged<Collection>;
 
       data.push(
-        ...res.data.filter((c) => c.subject_type === SubjectTypeAnime || c.subject_type === SubjectTypeEpisode),
+        ...body.data.filter((c) => c.subject_type === SubjectTypeAnime || c.subject_type === SubjectTypeEpisode),
       );
 
       offset += pageSize;
-    } while (offset < res.total);
+    } while (offset < body.total);
   }
 
   return data;
@@ -70,12 +74,12 @@ async function getSubjectInfo(subjectID: number, cache: Cache): Promise<SlimSubj
   let data: SlimSubject;
   let total_episode = 0;
 
-  const { body, statusCode } = await get(`/v0/subjects/${subjectID}`);
-  if (statusCode === 404) {
+  const { body, code } = await get(`v0/subjects/${subjectID}`);
+  if (code === 404) {
     await cache.set(cacheKey, null, 60 * 60 * 24);
     return null;
   }
-  const s = (await body.json()) as Subject;
+  const s = JSON.parse(body) as Subject;
   total_episode = s.total_episodes;
   data = {
     id: s.id,
@@ -150,7 +154,7 @@ async function _fetchAllEpisode(subjectID: number, pageSize: number = 200): Prom
   let res: Paged<Episode>;
 
   do {
-    const { statusCode, body } = await get("/v0/episodes", {
+    const { code, body } = await get("v0/episodes", {
       query: {
         subject_id: subjectID,
         offset,
@@ -158,11 +162,11 @@ async function _fetchAllEpisode(subjectID: number, pageSize: number = 200): Prom
       },
     });
 
-    if (statusCode !== 200) {
-      throw new Error(`unexpected error ${statusCode} ${await body.text()}`);
+    if (code !== 200) {
+      throw new Error(`unexpected error ${code} ${JSON.stringify(body)}`);
     }
 
-    res = await body.json();
+    res = JSON.parse(body) as Paged<Episode>;
 
     data.push(...res.data);
 

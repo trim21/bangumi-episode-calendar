@@ -1,23 +1,29 @@
-import { Client } from "undici";
-import type { RequestOptions, ResponseData } from "undici/types/dispatcher";
+import got from "got";
+import type { OptionsInit } from "got/dist/source/core/options";
 
-const commonHeader = { "user-agent": "trim21/bangumi/workers" } as const;
-const client = new Client("https://api.bgm.tv");
-
-export function get(path: string, option?: Omit<RequestOptions, "method" | "path">): Promise<ResponseData> {
-  return req("GET", path, option);
+interface Res {
+  code: number;
+  body: string;
+  ok: boolean;
 }
 
-function req(
-  method: "GET" | "POST",
-  path: string,
-  option?: Omit<RequestOptions, "method" | "path">,
-): Promise<ResponseData> {
-  if (option === undefined) {
-    option = { headers: commonHeader };
-  } else {
-    option.headers = Object.assign(option.headers ?? {}, commonHeader);
-  }
+const commonHeader = { "user-agent": "trim21/bangumi/workers" } as const;
 
-  return client.request({ ...option, path, method });
+const g = got.extend({
+  prefixUrl: "https://api.bgm.tv",
+  headers: commonHeader,
+  http2: true,
+});
+
+export async function get(path: string, option?: { query: OptionsInit["searchParams"] }): Promise<Res> {
+  const res = await g.get(path, {
+    throwHttpErrors: false,
+    searchParams: option.query,
+  });
+
+  return {
+    code: res.statusCode,
+    body: res.body,
+    ok: res.ok,
+  };
 }
