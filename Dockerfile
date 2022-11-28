@@ -21,4 +21,6 @@ WORKDIR /usr/src/app
 
 COPY --from=builder /usr/src/app/ ./
 
+ENV NODE_ENV=production
+
 ENTRYPOINT [ "node", "--experimental-specifier-resolution=node", "--enable-source-maps", "dist/main.js" ]
