@@ -15,7 +15,7 @@ const g = got.extend({
   http2: true,
 });
 
-export async function get(path: string, option?: { query: OptionsInit["searchParams"] }): Promise<Res> {
+export async function get(path: string, option: { query?: OptionsInit["searchParams"] } = {}): Promise<Res> {
   const res = await g.get(path, {
     throwHttpErrors: false,
     searchParams: option.query,
