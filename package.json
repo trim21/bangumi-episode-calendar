@@ -11,7 +11,7 @@
   "scripts": {
     "format": "prettier -w ./",
     "lint": "eslint --ext ts ./",
-    "build": "nest build",
+    "build": "tsc",
     "start": "nodemon",
     "dev": "yarn start --watch",
     "prepare": "husky install"
