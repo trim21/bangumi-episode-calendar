@@ -35,20 +35,20 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^18.11.15",
+    "@types/node": "^18.11.16",
     "@typescript-eslint/eslint-plugin": "^5.46.1",
     "@typescript-eslint/parser": "^5.46.1",
-    "eslint": "^8.29.0",
+    "eslint": "^8.30.0",
     "eslint-import-resolver-typescript": "^3.5.2",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-n": "^15.6.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
     "husky": "^8.0.2",
-    "lint-staged": "^13.0.4",
+    "lint-staged": "^13.1.0",
     "nodemon": "^2.0.20",
-    "prettier": "^2.8.0",
-    "typescript": "~4.9.3"
+    "prettier": "^2.8.1",
+    "typescript": "~4.9.4"
   },
   "dependencies": {
     "@fastify/error": "^3.2.0",
