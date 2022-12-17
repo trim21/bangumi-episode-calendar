@@ -25,9 +25,9 @@ jobs:
 
       - run: |
           if ! docker pull ghcr.io/trim21/bangumi-workers:base-${TAG_HASH}; then
+            echo "build base docker image"
             docker build -t ghcr.io/trim21/bangumi-workers:base-${TAG_HASH} -f base.dockerfile .
             docker push ghcr.io/trim21/bangumi-workers:base-${TAG_HASH}
-            echo "Command failed"
           fi
 
           docker tag ghcr.io/trim21/bangumi-workers:base-${TAG_HASH} base-image
