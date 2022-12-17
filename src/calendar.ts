@@ -1,5 +1,6 @@
 import pLimit from "p-limit";
 import { createError } from "@fastify/error";
+import dayjs from "dayjs";
 
 import type { Collection, Episode, Paged, Subject } from "./bangumi";
 import type { Cache } from "./cache";
@@ -67,7 +68,7 @@ interface SlimSubject {
 }
 
 async function getSubjectInfo(subjectID: number, cache: Cache): Promise<SlimSubject | null> {
-  const cacheKey = `subject-v2-${subjectID}`;
+  const cacheKey = `subject-v3-${subjectID}`;
 
   const cached = await cache.get<SlimSubject>(cacheKey);
   if (cached !== undefined) {
@@ -103,7 +104,7 @@ async function getSubjectInfo(subjectID: number, cache: Cache): Promise<SlimSubj
 
     if (all_episodes.length !== 0 && future_episodes.length === 0 && all_episodes.length <= 200) {
       // no future episodes, just cache it longer than normal episode
-      await cache.set(cacheKey, data, 60 * 60 * 24 * 30);
+      await cache.set(cacheKey, data, 60 * 60 * 24 * 7);
       return data;
     }
 
@@ -187,15 +188,15 @@ const SubjectTypeEpisode = 6;
 
 function renderICS(subjects: SlimSubject[]): string {
   const calendar = new ICalendar({ name: "Bangumi Episode Air Calendar" });
-  const today = new Date();
+  const today = dayjs().unix();
 
   for (const subject of subjects) {
     for (const episode of subject.future_episodes) {
       const date = episode.air_date;
-      const ts = new Date(date[0], date[1] - 1, date[2]);
+      const ts = dayjs(new Date(date[0], date[1] - 1, date[2]));
 
       // only show episode in 30 days.
-      if (ts.getTime() > today.getTime() + 30 * 24 * 60 * 60 * 1000) {
+      if (ts.unix() > today + 30 * 24 * 60 * 60) {
         continue;
       }
 
