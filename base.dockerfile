@@ -2,7 +2,7 @@ FROM node:18-slim as builder
 
 WORKDIR /usr/src/app
 
-COPY . ./
+COPY package.json yarn.lock ./
 
 RUN yarn --prod
 
