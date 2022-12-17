@@ -10,6 +10,6 @@ RUN yarn --prod && \
 
 FROM node:18-slim
 
-COPY --from=builder /usr/src/app/ ./
+COPY --from=builder /usr/src/app/ /usr/src/app
 
 ENV NODE_ENV=production
