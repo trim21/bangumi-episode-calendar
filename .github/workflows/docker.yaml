@@ -15,15 +15,24 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - run: echo "TAG_HASH=${{ hashFiles('yarn.lock') }}" >> $GITHUB_ENV
+
       - uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ github.token }}
 
-      - name: Build and push
-        uses: docker/build-push-action@v3
-        with:
-          context: ./
-          push: true
-          tags: ghcr.io/trim21/bangumi-workers:latest
+      - run: |
+          if ! docker pull ghcr.io/trim21/bangumi-workers:base-${TAG_HASH}; then
+            # "exist"
+          else
+            docker build -t ghcr.io/trim21/bangumi-workers:base-${TAG_HASH} -f Dockerfile.base .
+            echo "Command failed"
+          fi
+
+          docker tag ghcr.io/trim21/bangumi-workers:base-${TAG_HASH} base-image
+
+          docker build -t ghcr.io/trim21/bangumi-workers:latest .
+
+      - run: docker push ghcr.io/trim21/bangumi-workers:latest
