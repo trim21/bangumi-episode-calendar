@@ -10,11 +10,11 @@ import { logger } from "./logger";
 
 const NotFoundError = createError("NOT_FOUND", "%s", 404);
 
+const limit = pLimit(20);
+
 export async function buildICS(username: string, cache: Cache): Promise<string> {
   logger.info(`fetching collection of user ${username}`);
   let collections: Array<Collection> = await fetchAllUserCollection(username);
-
-  const limit = pLimit(10);
 
   const subjects: SlimSubject[] = (
     await Promise.all(collections.map((s) => limit(() => getSubjectInfo(s.subject_id, cache))))
