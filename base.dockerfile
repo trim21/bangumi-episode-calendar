@@ -4,7 +4,8 @@ WORKDIR /usr/src/app
 
 COPY package.json yarn.lock ./
 
-RUN yarn --prod
+RUN yarn --prod && \
+    rm package.json yarn.lock
 
 
 FROM node:18-slim
