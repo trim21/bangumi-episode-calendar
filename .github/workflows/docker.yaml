@@ -25,9 +25,7 @@ jobs:
 
       - run: |
           if ! docker pull ghcr.io/trim21/bangumi-workers:base-${TAG_HASH}; then
-            # "exist"
-          else
-            docker build -t ghcr.io/trim21/bangumi-workers:base-${TAG_HASH} -f Dockerfile.base .
+            docker build -t ghcr.io/trim21/bangumi-workers:base-${TAG_HASH} -f base.dockerfile .
             echo "Command failed"
           fi
 

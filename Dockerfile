@@ -1,7 +1,7 @@
-FROM node:18-slim
+FROM base-image
 
 WORKDIR /usr/src/app
+ENV NODE_ENV=production
+ENTRYPOINT [ "node", "--no-warnings", "--loader=ts-node/esm/transpile-only", "--experimental-specifier-resolution=node", "--enable-source-maps", "./src/main.ts" ]
 
-COPY package.json yarn.lock ./
-
-RUN yarn --prod
+COPY --from=builder /usr/src/app/ ./
