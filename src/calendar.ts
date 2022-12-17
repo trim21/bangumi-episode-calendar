@@ -1,11 +1,13 @@
 import pLimit from "p-limit";
-import { NotFoundException } from "@nestjs/common";
+import { createError } from "@fastify/error";
 
-import type { Collection, Episode, Paged, Subject } from "@/bangumi";
-import type { Cache } from "@/cache";
-import { get } from "@/request";
-import { notNull, uuidByString } from "@/util";
-import { logger } from "@/logger";
+import type { Collection, Episode, Paged, Subject } from "./bangumi";
+import type { Cache } from "./cache";
+import { get } from "./request";
+import { notNull, uuidByString } from "./util";
+import { logger } from "./logger";
+
+const NotFoundError = createError("NOT_FOUND", "%s", 404);
 
 export async function buildICS(username: string, cache: Cache): Promise<string> {
   logger.info(`fetching collection of user ${username}`);
@@ -39,7 +41,7 @@ async function fetchAllUserCollection(username: string, pageSize: number = 50): 
 
       if (!res.ok) {
         if (res.code === 404) {
-          throw new NotFoundException("user not found");
+          throw new NotFoundError(`user ${username} not found`);
         }
 
         throw new Error(`Unexpected HTTP ERROR ${res.body}`);

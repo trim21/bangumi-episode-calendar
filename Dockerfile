@@ -1,26 +1,17 @@
-FROM node:lts-slim as builder
+FROM node:18-slim as builder
 
 WORKDIR /usr/src/app
 
-COPY package.json yarn.lock ./
+COPY . ./
 
-RUN yarn
+RUN yarn --prod
 
-COPY tsconfig*.json nest-cli.json ./
+##############
 
-COPY src src/
-
-RUN yarn build && rm -rf node_modules tsconfig*.json nest-cli.json src
-
-RUN yarn --prod && rm -rf yarn.lock .husky
-
-#####
-FROM node:lts-slim
+FROM node:18-slim
 
 WORKDIR /usr/src/app
+ENV NODE_ENV=production
+ENTRYPOINT [ "node", "--no-warnings", "--loader=ts-node/esm/transpile-only", "--experimental-specifier-resolution=node", "--enable-source-maps", "./src/main.ts" ]
 
 COPY --from=builder /usr/src/app/ ./
-
-ENV NODE_ENV=production
-
-ENTRYPOINT [ "node", "--experimental-specifier-resolution=node", "--enable-source-maps", "dist/main.js" ]

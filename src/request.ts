@@ -1,4 +1,4 @@
-import got from "got";
+import { got } from "got";
 import type { OptionsInit } from "got/dist/source/core/options";
 
 interface Res {

@@ -1,20 +1,7 @@
-import { Injectable } from "@nestjs/common";
-import { default as Redis } from "ioredis";
+import type { default as Redis } from "ioredis";
 
-import { Config } from "@/config";
-
-@Injectable()
 export class Cache {
-  private readonly redis: Redis;
-
-  constructor(config: Config) {
-    this.redis = new Redis({
-      port: config.REDIS_PORT,
-      host: config.REDIS_HOST,
-      password: config.REDIS_PASSWORD,
-      db: config.REDIS_DB,
-    });
-  }
+  constructor(private readonly redis: Redis) {}
 
   async set(key: string, value: any, ttlSeconds: number) {
     await this.redis.set(key, JSON.stringify(value), "EX", ttlSeconds);

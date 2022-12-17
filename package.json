@@ -4,7 +4,7 @@
   "description": "",
   "private": true,
   "type": "module",
-  "main": "dist/main.js",
+  "main": "src/main.ts",
   "engines": {
     "node": "^18.0.0"
   },
@@ -12,13 +12,25 @@
     "format": "prettier -w ./",
     "lint": "eslint --ext ts ./",
     "build": "nest build",
-    "start": "cross-env NODE_OPTIONS=\"--enable-source-maps --experimental-specifier-resolution=node\" nest start --watch --config nest-cli.json",
+    "start": "nodemon",
     "dev": "yarn start --watch",
     "prepare": "husky install"
   },
-  "lint-staged": {
-    "*.{ts,html,json,cjs,mjs,js}": "prettier -w",
-    "*.ts": "eslint --fix"
+  "nodemonConfig": {
+    "restartable": "rs",
+    "ignore": [
+      "**.test.ts",
+      ".git",
+      "node_modules/**"
+    ],
+    "watch": [
+      "src",
+      ".env"
+    ],
+    "execMap": {
+      "ts": "node --no-warnings -r dotenv/config --loader ts-node/esm --experimental-specifier-resolution=node --enable-source-maps"
+    },
+    "ext": "ts,js,json,html"
   },
   "author": "",
   "license": "MIT",
@@ -33,25 +45,23 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
     "husky": "^8.0.2",
-    "lint-staged": "^13.1.0",
-    "prettier": "^2.8.1",
-    "typescript": "~4.9.4"
+    "lint-staged": "^13.0.4",
+    "nodemon": "^2.0.20",
+    "prettier": "^2.8.0",
+    "ts-node": "^10.9.1",
+    "typescript": "~4.9.3"
   },
   "dependencies": {
-    "@nestjs/cli": "^9.1.5",
-    "@nestjs/common": "^9.2.1",
-    "@nestjs/config": "^2.2.0",
-    "@nestjs/core": "^9.2.1",
-    "@nestjs/platform-fastify": "^9.2.1",
+    "@fastify/error": "^3.2.0",
     "cross-env": "^7.0.3",
+    "dotenv": "^16.0.3",
     "fastify": "^4.10.2",
     "got": "^12.5.3",
     "ioredis": "^5.2.4",
-    "log4js": "^6.7.1",
+    "nanoid": "^4.0.0",
     "p-limit": "^4.0.0",
-    "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.6.0",
-    "winston": "^3.8.2"
+    "pino": "^8.8.0",
+    "pino-pretty": "^9.1.1"
   },
   "prettier": {
     "printWidth": 120,

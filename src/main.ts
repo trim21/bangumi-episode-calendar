@@ -1,29 +1,23 @@
-import { FastifyAdapter } from "@nestjs/platform-fastify";
-import { NestFactory } from "@nestjs/core";
-import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+import { nanoid } from "nanoid";
 
-import { AppModule } from "@/module";
-import { logger } from "@/logger";
+import { production } from "./config";
+import { logger } from "./logger";
+import { createServer } from "./server";
 
-const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {
-  logger: {
-    log(message: any, ...optionalParams): any {
-      logger.info(message, ...optionalParams);
-    },
-    error(message: any, ...optionalParams): any {
-      logger.error(message, ...optionalParams);
-    },
-    debug(message: any, ...optionalParams): any {
-      logger.debug(message, ...optionalParams);
-    },
-    warn(message: any, ...optionalParams): any {
-      logger.warn(message, ...optionalParams);
-    },
-    verbose(message: any, ...optionalParams): any {
-      logger.verbose(message, ...optionalParams);
-    },
+if (process.argv.includes("--help") || process.argv.includes("-h")) {
+  // eslint-disable-next-line n/no-process-exit
+  process.exit(0);
+}
+
+const server = await createServer({
+  logger: logger.child({ name: "fastify" }, { level: production ? "warn" : "info" }),
+  disableRequestLogging: process.env.ENABLE_REQUEST_LOGGING !== "true",
+  genReqId: (): string => {
+    return `dummy-ray-${nanoid()}`;
   },
 });
-await app.listen(3000, "0.0.0.0");
 
-logger.info("server started");
+const port = process.env.PORT ? Number.parseInt(process.env.PORT) : 3000;
+const host = process.env.HOST ?? "0.0.0.0";
+
+await server.listen({ port, host });

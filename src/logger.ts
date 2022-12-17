@@ -1,37 +1,17 @@
-import * as stream from "stream";
+import { pino } from "pino";
 
-import * as winston from "winston";
+import { pkg, production } from "./config";
 
-export const logger = winston.createLogger({
+export const logger = pino({
   level: "info",
+  base: production ? { pid: process.pid, version: pkg.version } : undefined,
+  timestamp() {
+    return `,"time":"${new Date().toISOString()}"`;
+  },
+  transport: production ? undefined : { target: "pino-pretty", options: { colorize: true } },
+  formatters: {
+    level(level) {
+      return { level };
+    },
+  },
 });
-
-const out = new stream.PassThrough();
-
-out.pipe(process.stdout);
-
-if (process.env.NODE_ENV === "production") {
-  logger.add(
-    new winston.transports.Stream({
-      stream: out,
-      format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
-    }),
-  );
-} else {
-  logger.add(
-    new winston.transports.Stream({
-      stream: out,
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.colorize({
-          colors: {
-            info: "blue",
-            warn: "yellow",
-            error: "red",
-          },
-        }),
-        winston.format.simple(),
-      ),
-    }),
-  );
-}
