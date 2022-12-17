@@ -5,3 +5,5 @@ WORKDIR /usr/src/app
 COPY . ./
 
 RUN yarn --prod
+
+ENV NODE_ENV=production
