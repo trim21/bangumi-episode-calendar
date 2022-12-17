@@ -111,7 +111,7 @@ async function getSubjectInfo(subjectID: number, cache: Cache): Promise<SlimSubj
     data.future_episodes.push(...future_episodes);
   }
 
-  await cache.set(cacheKey, data, 60 * 60 * 24 * 7);
+  await cache.set(cacheKey, data, 60 * 60 * 24 * 3);
 
   return data;
 }
