@@ -95,11 +95,11 @@ async function getSubjectInfo(subjectID: number, cache: Cache): Promise<SlimSubj
   if (total_episode) {
     const all_episodes = await fetchAllEpisode(subjectID);
 
-    const today = new Date().getTime() - 24 * 3600 * 3;
+    const today = dayjs().unix() - 24 * 60 * 60 * 3;
 
     const future_episodes = all_episodes.filter((episode) => {
-      const ts = new Date(episode.air_date[0], episode.air_date[1] - 1, episode.air_date[2]);
-      return ts.getTime() > today;
+      const ts = dayjs(new Date(episode.air_date[0], episode.air_date[1] - 1, episode.air_date[2]));
+      return ts.unix() > today;
     });
 
     if (all_episodes.length !== 0 && future_episodes.length === 0 && all_episodes.length <= 200) {
