@@ -190,6 +190,7 @@ function renderICS(subjects: SlimSubject[]): string {
   const calendar = new ICalendar({
     name: "Bangumi Episode Air Calendar",
     "X-PUBLISHED-TTL": "PT8H",
+    "REFRESH-INTERVAL;VALUE=DURATION": "PT24H",
   });
   const today = unix();
 

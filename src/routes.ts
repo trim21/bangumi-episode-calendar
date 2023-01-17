@@ -27,7 +27,7 @@ export async function setup(app: FastifyInstance) {
 
     const ics = await buildICS(username, cache);
 
-    await cache.set(cacheKey, ics, 60 * 60 * 24);
+    await cache.set(cacheKey, ics, 60 * 60 * 23);
     return res.send(ics);
   });
 }
