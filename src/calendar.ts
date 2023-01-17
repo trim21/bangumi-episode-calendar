@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import type { Collection, Episode, Paged, Subject } from "./bangumi";
 import type { Cache } from "./cache";
 import { get } from "./request";
-import { notNull, uuidByString } from "./util";
+import { notNull, unix, uuidByString } from "./util";
 import { logger } from "./logger";
 
 const NotFoundError = createError("NOT_FOUND", "%s", 404);
@@ -95,7 +95,7 @@ async function getSubjectInfo(subjectID: number, cache: Cache): Promise<SlimSubj
   if (total_episode) {
     const all_episodes = await fetchAllEpisode(subjectID);
 
-    const today = dayjs().unix() - 24 * 60 * 60 * 3;
+    const today = unix() - 24 * 60 * 60 * 3;
 
     const future_episodes = all_episodes.filter((episode) => {
       const ts = dayjs(new Date(episode.air_date[0], episode.air_date[1] - 1, episode.air_date[2]));
@@ -187,8 +187,11 @@ const SubjectTypeAnime = 2;
 const SubjectTypeEpisode = 6;
 
 function renderICS(subjects: SlimSubject[]): string {
-  const calendar = new ICalendar({ name: "Bangumi Episode Air Calendar" });
-  const today = dayjs().unix();
+  const calendar = new ICalendar({
+    name: "Bangumi Episode Air Calendar",
+    "X-PUBLISHED-TTL": "P1D",
+  });
+  const today = unix();
 
   for (const subject of subjects) {
     for (const episode of subject.future_episodes) {
@@ -233,8 +236,8 @@ class ICalendar {
   private readonly now: Date;
   private readonly lines: string[];
 
-  constructor(config: { name: string }) {
-    this.name = config.name;
+  constructor({ name, ...meta }: { name: string; [keys: string]: string }) {
+    this.name = name;
     this.now = new Date();
     this.lines = [
       "BEGIN:VCALENDAR",
@@ -243,6 +246,8 @@ class ICalendar {
       `NAME:${this.name}`,
       `X-WR-CALNAME:${this.name}`,
     ];
+
+    this.lines.push(...Object.entries(meta).map(([key, value]) => `${key}:${value}`));
   }
 
   createEvent(event: Event): void {

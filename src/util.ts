@@ -9,3 +9,7 @@ export function uuidByString(v: string): string {
 export function notNull<T>(x: T): x is Exclude<T, null> {
   return x !== null;
 }
+
+export function unix(): number {
+  return Math.trunc(new Date().getTime() / 1000);
+}
