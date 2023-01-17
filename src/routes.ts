@@ -18,7 +18,7 @@ export async function setup(app: FastifyInstance) {
       return res.type("text/html").send(bangumiCalendarHTML);
     }
 
-    const cacheKey = `episode-calendar-v4-${username}`;
+    const cacheKey = `episode-calendar-v5-${username}`;
 
     const cached = await cache.get(cacheKey);
     if (cached) {
