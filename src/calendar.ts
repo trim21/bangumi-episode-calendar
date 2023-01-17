@@ -189,7 +189,7 @@ const SubjectTypeEpisode = 6;
 function renderICS(subjects: SlimSubject[]): string {
   const calendar = new ICalendar({
     name: "Bangumi Episode Air Calendar",
-    "X-PUBLISHED-TTL": "P1D",
+    "X-PUBLISHED-TTL": "PT8H",
   });
   const today = unix();
 
