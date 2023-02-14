@@ -12,6 +12,10 @@ jobs:
     env:
       IMAGE: "ghcr.io/trim21/bangumi-workers"
 
+    concurrency:
+      group: ${{ github.workflow }}
+      cancel-in-progress: false
+
     steps:
       - uses: actions/checkout@v3
 
