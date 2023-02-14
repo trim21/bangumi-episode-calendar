@@ -10,15 +10,24 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     env:
-      IMAGE: "bangumi/chii"
+      IMAGE: "ghcr.io/trim21/bangumi-workers"
 
     steps:
       - uses: actions/checkout@v3
 
       - run: |
-          LONG_TAG=${{ hashFiles('yarn.lock') }}
+          export "TAG_HASH=${DOCKER_FILE_HASH:0:10}-${LOCK_FILE_HASH:0:10}"
 
-          echo "TAG_HASH=3-${LONG_TAG:0:10}" >> $GITHUB_ENV
+          if ! docker pull "${IMAGE}:base-${TAG_HASH}"; then
+            echo "build base docker image"
+            docker build -t "${IMAGE}:base-${TAG_HASH}" -f etc/base.dockerfile .
+            docker push "${IMAGE}:base-${TAG_HASH}"
+          fi
+
+          docker tag "${IMAGE}:base-${TAG_HASH}" base-image
+        env:
+          LOCK_FILE_HASH: "${{ hashFiles('yarn.lock') }}"
+          DOCKER_FILE_HASH: "${{ hashFiles('etc/base.dockerfile') }}"
 
       - uses: docker/login-action@v2
         with:
@@ -26,15 +35,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ github.token }}
 
-      - run: |
-          if ! docker pull ghcr.io/trim21/bangumi-workers:base-${TAG_HASH}; then
-            echo "build base docker image"
-            docker build -t ghcr.io/trim21/bangumi-workers:base-${TAG_HASH} -f base.dockerfile .
-            docker push ghcr.io/trim21/bangumi-workers:base-${TAG_HASH}
-          fi
+      - run: docker build -f etc/main.dockerfile -t "${IMAGE}:latest" .
 
-          docker tag ghcr.io/trim21/bangumi-workers:base-${TAG_HASH} base-image
-
-          docker build -t ghcr.io/trim21/bangumi-workers:latest .
-
-      - run: docker push ghcr.io/trim21/bangumi-workers:latest
+      - run: docker push "${IMAGE}:latest"
