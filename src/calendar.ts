@@ -111,6 +111,7 @@ async function getSubjectInfo(subjectID: number, cache: Cache): Promise<SlimSubj
     data.future_episodes.push(...future_episodes);
   }
 
+  // subject with future episodes, only cache it in 3 days
   await cache.set(cacheKey, data, 60 * 60 * 24 * 3);
 
   return data;
