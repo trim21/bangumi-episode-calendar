@@ -19,6 +19,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
       - run: |
           export "TAG_HASH=${DOCKER_FILE_HASH:0:10}-${LOCK_FILE_HASH:0:10}"
 
@@ -32,12 +38,6 @@ jobs:
         env:
           LOCK_FILE_HASH: "${{ hashFiles('yarn.lock') }}"
           DOCKER_FILE_HASH: "${{ hashFiles('etc/base.dockerfile') }}"
-
-      - uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ github.token }}
 
       - run: docker build -f etc/main.dockerfile -t "${IMAGE}:latest" .
 
