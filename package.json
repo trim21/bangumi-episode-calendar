@@ -63,7 +63,7 @@
     "nanoid": "^4.0.1",
     "p-limit": "^4.0.0",
     "pino": "^8.11.0",
-    "pino-pretty": "^9.2.0",
+    "pino-pretty": "^9.4.0",
     "ts-node": "^10.9.1"
   },
   "prettier": {
