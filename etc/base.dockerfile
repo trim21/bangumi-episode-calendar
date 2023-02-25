@@ -12,6 +12,6 @@ ENV NODE_ENV=production
 
 WORKDIR /usr/src/app
 
-ENTRYPOINT [ "node", "--no-warnings", "--loader=ts-node/esm/transpile-only", "--experimental-specifier-resolution=node", "--enable-source-maps", "./src/main.ts" ]
+ENTRYPOINT [ "node", "--no-warnings", "--loader=@esbuild-kit/esm-loader", "--enable-source-maps", "./src/main.ts" ]
 
 COPY --from=builder /usr/src/app/ /usr/src/app
