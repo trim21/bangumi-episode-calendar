@@ -53,7 +53,7 @@
   },
   "dependencies": {
     "@fastify/error": "^3.2.0",
-    "@sinclair/typebox": "^0.25.21",
+    "@sinclair/typebox": "^0.25.24",
     "cross-env": "^7.0.3",
     "dayjs": "^1.11.7",
     "dotenv": "^16.0.3",
