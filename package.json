@@ -36,7 +36,7 @@
   "license": "MIT",
   "devDependencies": {
     "@fastify/type-provider-typebox": "^2.4.0",
-    "@types/node": "^18.15.2",
+    "@types/node": "^18.15.3",
     "@typescript-eslint/eslint-plugin": "^5.55.0",
     "@typescript-eslint/parser": "^5.55.0",
     "cross-env": "^7.0.3",
