@@ -58,7 +58,7 @@
     "@fastify/error": "^3.2.0",
     "@sinclair/typebox": "^0.25.24",
     "dayjs": "^1.11.7",
-    "fastify": "^4.13.0",
+    "fastify": "^4.14.1",
     "got": "^12.6.0",
     "ioredis": "^5.3.1",
     "nanoid": "^4.0.1",
