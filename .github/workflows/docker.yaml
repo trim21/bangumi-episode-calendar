@@ -35,6 +35,7 @@ jobs:
           fi
 
           docker tag "${IMAGE}:base-${TAG_HASH}" base-image
+
         env:
           LOCK_FILE_HASH: "${{ hashFiles('yarn.lock') }}"
           DOCKER_FILE_HASH: "${{ hashFiles('etc/base.dockerfile') }}"

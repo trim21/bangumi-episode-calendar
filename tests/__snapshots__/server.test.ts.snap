@@ -1,0 +1,36 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should get index page 1`] = `
+"<!DOCTYPE html>
+<html lang=\\"en\\">
+  <head>
+    <meta charset=\\"UTF-8\\" />
+    <meta
+      name=\\"viewport\\"
+      content=\\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0\\"
+    />
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"ie=edge\\" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form action=\\"/episode-calendar\\" method=\\"get\\">
+      <label>
+        <input required type=\\"text\\" name=\\"username\\" placeholder=\\"username\\" />
+      </label>
+      <button type=\\"submit\\">转跳</button>
+    </form>
+  </body>
+</html>
+"
+`;
+
+exports[`should get user calendar 1`] = `
+"BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//trim21//bangumi-icalendar//CN
+NAME:Bangumi Episode Air Calendar
+X-WR-CALNAME:Bangumi Episode Air Calendar
+X-PUBLISHED-TTL:PT8H
+REFRESH-INTERVAL;VALUE=DURATION:PT8H
+END:VCALENDAR"
+`;

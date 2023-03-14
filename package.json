@@ -11,9 +11,11 @@
   "scripts": {
     "format": "prettier -w ./",
     "lint": "eslint --ext ts ./",
-    "build": "tsc",
+    "build": "tsc --noEmit",
     "start": "nodemon",
     "dev": "yarn start --watch",
+    "test": "vitest --run",
+    "vitest": "vitest",
     "prepare": "husky install"
   },
   "nodemonConfig": {
@@ -36,6 +38,7 @@
   "license": "MIT",
   "devDependencies": {
     "@fastify/type-provider-typebox": "^2.4.0",
+    "@types/ioredis-mock": "^8.2.1",
     "@types/node": "^18.15.3",
     "@typescript-eslint/eslint-plugin": "^5.55.0",
     "@typescript-eslint/parser": "^5.55.0",
@@ -48,10 +51,13 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
     "husky": "^8.0.3",
+    "ioredis-mock": "^8.2.6",
     "lint-staged": "^13.2.0",
     "nodemon": "^2.0.21",
     "prettier": "^2.8.4",
-    "typescript": "~4.9.5"
+    "typescript": "~4.9.5",
+    "vitest": "^0.29.2",
+    "vitest-github-actions-reporter": "^0.10.0"
   },
   "dependencies": {
     "@esbuild-kit/esm-loader": "^2.5.5",
