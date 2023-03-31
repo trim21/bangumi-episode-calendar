@@ -53,7 +53,7 @@
     "husky": "^8.0.3",
     "ioredis-mock": "^8.4.0",
     "lint-staged": "^13.2.0",
-    "nodemon": "^2.0.21",
+    "nodemon": "^2.0.22",
     "prettier": "^2.8.7",
     "typescript": "~5.0.2",
     "vitest": "^0.29.8",
