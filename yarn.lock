@@ -201,10 +201,12 @@
   dependencies:
     fast-json-stringify "^5.0.0"
 
-"@fastify/type-provider-typebox@^2.4.0":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@fastify/type-provider-typebox/-/type-provider-typebox-2.4.0.tgz#82e55bbf0da6d7f19e0521959467d4b7e0fefe4c"
-  integrity sha512-dP8KnpfyBD1FT1UxNWCRqSpKG69xYAK53q6MqUjuwYL7xvogXBbH/tpAMc1kZkKmgAHPT0migy9DaYtnkTbIIQ==
+"@fastify/type-provider-typebox@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@fastify/type-provider-typebox/-/type-provider-typebox-3.0.0.tgz#d88f9f3142aeb8145f9d8979e1d946643e471752"
+  integrity sha512-VVYY/ZcPSFElLtRYboA2bmFxoINGDqmmqJ8Ch8+2lvmc+XFCsOJ714SEOpgshC4n52KBclgQxf2O80NeEAN7gQ==
+  dependencies:
+    "@sinclair/typebox" "^0.26.4"
 
 "@humanwhocodes/config-array@^0.11.8":
   version "0.11.8"
@@ -268,7 +270,7 @@
     tiny-glob "^0.2.9"
     tslib "^2.4.0"
 
-"@sinclair/typebox@^0.26.8":
+"@sinclair/typebox@^0.26.4", "@sinclair/typebox@^0.26.8":
   version "0.26.8"
   resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.26.8.tgz#daea92a69f2903b1f1d9582b9539553f144aba6b"
   integrity sha512-fvAkOrUWndf5vjptkW+4TeTH84/bILWQHgk7rbbzT8trZxW+b84lr8dZQPM/r7cGNRFxDaJYsMjHCikEYyAHaw==
