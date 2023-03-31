@@ -37,7 +37,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@fastify/type-provider-typebox": "^2.4.0",
+    "@fastify/type-provider-typebox": "^3.0.0",
     "@types/ioredis-mock": "^8.2.1",
     "@types/node": "^18.15.3",
     "@typescript-eslint/eslint-plugin": "^5.57.0",
