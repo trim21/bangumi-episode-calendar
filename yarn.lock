@@ -861,7 +861,7 @@ __metadata:
     got: ^12.6.0
     husky: ^8.0.3
     ioredis: ^5.3.1
-    ioredis-mock: ^8.4.0
+    ioredis-mock: ^8.7.0
     lint-staged: ^13.2.1
     nanoid: ^4.0.2
     nodemon: ^2.0.22
@@ -2787,7 +2787,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ioredis-mock@npm:^8.4.0":
+"ioredis-mock@npm:^8.7.0":
   version: 8.7.0
   resolution: "ioredis-mock@npm:8.7.0"
   dependencies:
