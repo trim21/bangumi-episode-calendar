@@ -862,7 +862,7 @@ __metadata:
     husky: ^8.0.3
     ioredis: ^5.3.1
     ioredis-mock: ^8.4.0
-    lint-staged: ^13.2.0
+    lint-staged: ^13.2.1
     nanoid: ^4.0.2
     nodemon: ^2.0.22
     p-limit: ^4.0.0
@@ -3171,7 +3171,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lint-staged@npm:^13.2.0":
+"lint-staged@npm:^13.2.1":
   version: 13.2.1
   resolution: "lint-staged@npm:13.2.1"
   dependencies:
