@@ -5,6 +5,7 @@
   "private": true,
   "type": "module",
   "main": "src/main.ts",
+  "packageManager": "yarn@3.5.0",
   "engines": {
     "node": "^18.0.0"
   },

@@ -2,9 +2,12 @@ FROM node:18-slim as builder
 
 WORKDIR /usr/src/app
 
-COPY package.json yarn.lock ./
+COPY package.json .yarnrc.yml yarn.lock ./
+COPY .yarn/ ./.yarn/
 
-RUN yarn --prod && rm package.json yarn.lock
+RUN npm pkg delete scripts.prepare &&\
+    yarn workspaces focus --production app &&\
+    rm -rf package.json yarn.lock .yarnrc.yml .yarn
 
 FROM node:18-slim
 
