@@ -274,7 +274,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fastify/type-provider-typebox@npm:^3.0.0":
+"@fastify/type-provider-typebox@npm:^3.1.0":
   version: 3.1.0
   resolution: "@fastify/type-provider-typebox@npm:3.1.0"
   dependencies:
@@ -392,14 +392,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sinclair/typebox@npm:^0.26.8":
-  version: 0.26.8
-  resolution: "@sinclair/typebox@npm:0.26.8"
-  checksum: cbe390c46284fdbf864d152f53a22cbaa37d13c227ca722d8f74ad415071596cb5251222cf77f904113ef848feca37f61ccd9fd94e89e9a3db6ded69d46decd8
-  languageName: node
-  linkType: hard
-
-"@sinclair/typebox@npm:^0.27.8":
+"@sinclair/typebox@npm:^0.27.8, @sinclair/typebox@npm:~0.27.0":
   version: 0.27.8
   resolution: "@sinclair/typebox@npm:0.27.8"
   checksum: 00bd7362a3439021aa1ea51b0e0d0a0e8ca1351a3d54c606b115fdcc49b51b16db6e5f43b4fe7a28c38688523e22a94d49dd31168868b655f0d4d50f032d07a1
@@ -831,8 +824,8 @@ __metadata:
   dependencies:
     "@esbuild-kit/esm-loader": ^2.5.5
     "@fastify/error": ^3.2.0
-    "@fastify/type-provider-typebox": ^3.0.0
-    "@sinclair/typebox": ^0.26.8
+    "@fastify/type-provider-typebox": ^3.1.0
+    "@sinclair/typebox": ~0.27.0
     "@types/ioredis-mock": ^8.2.1
     "@types/node": ^18.15.11
     "@typescript-eslint/eslint-plugin": ^5.57.0
