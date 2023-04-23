@@ -55,7 +55,7 @@
     "ioredis-mock": "^8.4.0",
     "lint-staged": "^13.2.0",
     "nodemon": "^2.0.22",
-    "prettier": "^2.8.7",
+    "prettier": "^2.8.8",
     "typescript": "~5.0.3",
     "vitest": "^0.29.8",
     "vitest-github-actions-reporter": "^0.10.0"
