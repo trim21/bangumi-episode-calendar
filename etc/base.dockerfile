@@ -2,11 +2,11 @@ FROM node:18-slim as builder
 
 WORKDIR /usr/src/app
 
-COPY package.json package-lock.json ./
+COPY package.json yarn.lock ./
 
 RUN npm pkg delete scripts.prepare &&\
-    npm ci --omit=dev &&\
-    rm -rf package.json package-lock.json
+    yarn --prod &&\
+    rm -rf package.json yarn.lock
 
 FROM node:18-slim
 

@@ -20,9 +20,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "lts/*"
-          cache: npm
+          cache: yarn
 
-      - run: npm ci
+      - run: yarn
 
       - run: npm run format --check
       - run: npm run lint
