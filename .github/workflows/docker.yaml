@@ -30,7 +30,7 @@ jobs:
           password: ${{ github.token }}
 
       - run: |
-          export "TAG_HASH=${DOCKER_FILE_HASH:0:10}-${LOCK_FILE_HASH:0:10}"
+          export "TAG_HASH=${FILE_HASH}"
 
           if ! docker pull "${IMAGE}:base-${TAG_HASH}"; then
             echo "build base docker image"
@@ -41,8 +41,7 @@ jobs:
           docker tag "${IMAGE}:base-${TAG_HASH}" base-image
 
         env:
-          LOCK_FILE_HASH: "${{ hashFiles('yarn.lock') }}"
-          DOCKER_FILE_HASH: "${{ hashFiles('etc/base.dockerfile') }}"
+          FILE_HASH: "${{ hashFiles('yarn.lock', 'etc/base.dockerfile') }}"
 
       - name: Docker meta
         id: meta
