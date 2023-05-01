@@ -6,5 +6,12 @@
     "github>Trim21/renovate-config:app",
     "github>Trim21/renovate-config:monthly"
   ],
-  "rangeStrategy": "bump"
+  "rangeStrategy": "bump",
+  "packageRules": [
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["gcr.io/distroless/nodejs18-debian11", "node"],
+      "pinDigests": true
+    }
+  ]
 }
