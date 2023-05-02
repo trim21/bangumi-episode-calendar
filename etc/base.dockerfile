@@ -13,6 +13,6 @@ ENV NODE_ENV=production
 
 WORKDIR /app
 
-ENTRYPOINT [ "node", "--no-warnings", "--loader=@esbuild-kit/esm-loader", "--enable-source-maps", "./src/main.ts" ]
+ENTRYPOINT [ "/nodejs/bin/node", "--no-warnings", "--loader=@esbuild-kit/esm-loader", "--enable-source-maps", "./src/main.ts" ]
 
 COPY --from=builder /app/ /app
