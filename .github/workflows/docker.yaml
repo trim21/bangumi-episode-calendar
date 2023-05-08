@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: echo "SHA=$(git show --no-patch --no-notes --date=short-local --pretty='%h-%as')" >> $GITHUB_ENV
+      - run: echo "SHA=$(git show --no-patch --no-notes --date=short-local --pretty='%as-%h')" >> $GITHUB_ENV
         env:
           TZ: UTC
 
