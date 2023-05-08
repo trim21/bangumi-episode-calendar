@@ -15,7 +15,7 @@ jobs:
       IMAGE: "ghcr.io/trim21/bangumi-workers"
 
     concurrency:
-      group: ${{ github.workflow }}
+      group: ${{ github.workflow }}-${{ github.sha }}
       cancel-in-progress: false
 
     steps:
