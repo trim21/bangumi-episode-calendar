@@ -268,7 +268,7 @@
     tiny-glob "^0.2.9"
     tslib "^2.4.0"
 
-"@sinclair/typebox@~0.28.8":
+"@sinclair/typebox@~0.28.9":
   version "0.28.9"
   resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.28.9.tgz#594e4e752839868074be70a8cbb35f264de79d07"
   integrity sha512-m98m37J9CBZ8XinStjpss2ZOW50KG45XB4cAva2NGoQHiGPxhfNL2BzUXYCs6ahXdK7/F1NIjOGh+MPP5dK8Rw==
