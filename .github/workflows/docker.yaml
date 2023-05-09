@@ -49,7 +49,7 @@ jobs:
         with:
           images: "${{ env.IMAGE }}"
           tags: |
-            type=ref,event=branch,prefix={{ branch }}
+            type=ref,event=branch,suffix=-{{ sha }}
             type=ref,event=branch
             type=ref,event=branch,suffix=-${{ env.SHA }}
             # master branch will be the latest tag
