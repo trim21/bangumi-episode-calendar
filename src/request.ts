@@ -1,5 +1,5 @@
 import { got } from "got";
-import type { OptionsInit } from "got/dist/source/core/options";
+import type { OptionsInit } from "got";
 
 interface Res {
   code: number;
