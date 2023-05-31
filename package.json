@@ -15,8 +15,7 @@
     "build": "tsc --noEmit",
     "start": "nodemon",
     "dev": "yarn start --watch",
-    "test": "vitest --run",
-    "vitest": "vitest",
+    "test": "ava",
     "prepare": "husky install"
   },
   "author": {
@@ -43,6 +42,7 @@
     "@types/node": "^20.1.1",
     "@typescript-eslint/eslint-plugin": "^5.59.8",
     "@typescript-eslint/parser": "^5.59.8",
+    "ava": "^5.3.0",
     "cross-env": "^7.0.3",
     "dotenv": "^16.1.3",
     "eslint": "^8.41.0",
@@ -52,13 +52,9 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
     "husky": "^8.0.3",
-    "ioredis-mock": "^8.7.0",
     "lint-staged": "^13.2.2",
-    "nodemon": "^2.0.22",
     "prettier": "^2.8.8",
-    "typescript": "~5.0.4",
-    "vitest": "^0.31.3",
-    "vitest-github-actions-reporter": "^0.10.0"
+    "typescript": "~5.0.4"
   },
   "nodemonConfig": {
     "restartable": "rs",
@@ -80,5 +76,18 @@
     "printWidth": 120,
     "tabWidth": 2,
     "trailingComma": "all"
+  },
+  "ava": {
+    "files": [
+      "tests/**"
+    ],
+    "extensions": {
+      "ts": "module"
+    },
+    "nodeArguments": [
+      "-r",
+      "dotenv/config",
+      "--loader=@esbuild-kit/esm-loader"
+    ]
   }
 }

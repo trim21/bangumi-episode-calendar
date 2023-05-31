@@ -1,15 +1,15 @@
-import { expect, test } from "vitest";
+import test from "ava";
 
 import { createServer } from "../src/server";
 
-test("should get index page", async () => {
+test("should get index page", async (t) => {
   const app = await createServer();
   const res = await app.inject("/episode-calendar");
-  expect(res.body).toMatchSnapshot();
+  t.snapshot(res.body);
 });
 
-test("should get user calendar", async () => {
+test("should get user calendar", async (t) => {
   const app = await createServer();
   const res = await app.inject("/episode-calendar/382951.ics");
-  expect(res.body).toMatchSnapshot();
+  t.snapshot(res.body);
 });
