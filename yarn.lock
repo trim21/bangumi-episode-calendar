@@ -243,10 +243,10 @@
     picocolors "^1.0.0"
     tslib "^2.5.0"
 
-"@sinclair/typebox@~0.28.14":
-  version "0.28.14"
-  resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.28.14.tgz#31653c1ecb93af1eec673c771971620060dfde40"
-  integrity sha512-aB3ddagwMFz2cSLg0/gUt7yaUHJUKnT+rEHGdb/srtEFILB0zdL7a2mcbA7kskOCFHicAOV1POeeZdwoevFgAQ==
+"@sinclair/typebox@~0.28.20":
+  version "0.28.20"
+  resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.28.20.tgz#978652a10ced0102aec86e8e088837ab7d0d5871"
+  integrity sha512-QCF3BGfacwD+3CKhGsMeixnwOmX4AWgm61nKkNdRStyLVu0mpVFYlDSY8gVBOOED1oSwzbJauIWl/+REj8K5+w==
 
 "@sindresorhus/is@^5.2.0":
   version "5.3.0"
