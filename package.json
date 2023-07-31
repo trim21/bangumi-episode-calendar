@@ -35,7 +35,7 @@
     "nanoid": "^4.0.2",
     "p-limit": "^4.0.0",
     "pino": "^8.14.2",
-    "pino-pretty": "^10.0.0"
+    "pino-pretty": "^10.2.0"
   },
   "devDependencies": {
     "@types/ioredis-mock": "^8.2.2",
