@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@types/ioredis-mock": "^8.2.3",
-    "@types/node": "^20.5.7",
+    "@types/node": "^20.8.0",
     "@typescript-eslint/eslint-plugin": "^6.7.3",
     "@typescript-eslint/parser": "^6.7.3",
     "ava": "^5.3.1",
