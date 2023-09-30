@@ -258,10 +258,10 @@
   resolved "https://registry.yarnpkg.com/@types/http-cache-semantics/-/http-cache-semantics-4.0.1.tgz#0ea7b61496902b95890dc4c3a116b60cb8dae812"
   integrity sha512-SZs7ekbP8CN0txVG2xVRH6EgKmEm31BOxA07vkFaETzZz1xh+cbt8BcI0slpymvwhx5dlFnQG2rTlPVQn+iRPQ==
 
-"@types/ioredis-mock@^8.2.2":
-  version "8.2.2"
-  resolved "https://registry.yarnpkg.com/@types/ioredis-mock/-/ioredis-mock-8.2.2.tgz#80ba2acb3b4243037d06e9d0d4e44ce3ce1b9789"
-  integrity sha512-bnbPHOjxy4TUDjRh61MMoK2QvDNZqrMDXJYrEDZP/HPFvBubR24CQ0DBi5lgWhLxG4lvVsXPRDXtZ03+JgonoQ==
+"@types/ioredis-mock@^8.2.3":
+  version "8.2.3"
+  resolved "https://registry.yarnpkg.com/@types/ioredis-mock/-/ioredis-mock-8.2.3.tgz#4b420f40076f11f163eb28bc30bb9e8a23a04077"
+  integrity sha512-7veA+v2QXjPBvmuYDSyXcfcgCzlpMxa9z51g1+bZXLZ97teCmEs9qYiK9X/h7camGAJJvTiFHiE4mT8CNaqQlA==
   dependencies:
     ioredis ">=5"
 

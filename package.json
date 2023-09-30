@@ -38,7 +38,7 @@
     "pino-pretty": "^10.2.0"
   },
   "devDependencies": {
-    "@types/ioredis-mock": "^8.2.2",
+    "@types/ioredis-mock": "^8.2.3",
     "@types/node": "^20.5.7",
     "@typescript-eslint/eslint-plugin": "^6.5.0",
     "@typescript-eslint/parser": "^6.5.0",
