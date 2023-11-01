@@ -7,7 +7,7 @@
   "main": "src/main.ts",
   "packageManager": "yarn@1.22.19",
   "engines": {
-    "node": "^18.0.0"
+    "node": "^20.6.1"
   },
   "scripts": {
     "format": "prettier -w ./",
@@ -15,7 +15,7 @@
     "build": "tsc --noEmit",
     "start": "nodemon",
     "dev": "yarn start --watch",
-    "test": "ava",
+    "test": "cross-env NODE_OPTIONS=\"-r dotenv/config --loader=@esbuild-kit/esm-loader\" ava",
     "prepare": "husky install"
   },
   "author": {
@@ -83,11 +83,6 @@
     ],
     "extensions": {
       "ts": "module"
-    },
-    "nodeArguments": [
-      "-r",
-      "dotenv/config",
-      "--loader=@esbuild-kit/esm-loader"
-    ]
+    }
   }
 }
