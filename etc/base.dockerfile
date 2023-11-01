@@ -1,4 +1,4 @@
-FROM node:20-slim as builder
+FROM node:20-slim@sha256:8cd31bc4efbb5cb541914e161ee14ba2cf3f033dd21914ee6d76e6c780f70c0a as builder
 
 WORKDIR /app
 
