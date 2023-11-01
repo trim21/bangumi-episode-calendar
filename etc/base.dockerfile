@@ -7,7 +7,7 @@ COPY package.json yarn.lock ./
 RUN yarn --prod && \
     rm package.json yarn.lock
 
-FROM gcr.io/distroless/nodejs18-debian11:latest@sha256:7dd276a0b7852148fa4ba73ea78f91a222a5bd53f5c5dc894df543452c1ef68f
+FROM gcr.io/distroless/nodejs18-debian11:latest@sha256:af46ad3a1c8b82e6c1dfbbbd175b4b455a35b846ffc4a8cda7cb5b7031113bff
 
 ENV NODE_ENV=production
 
