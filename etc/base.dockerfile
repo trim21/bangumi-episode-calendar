@@ -1,4 +1,4 @@
-FROM node:18-slim@sha256:a2598120308db34b12278f10a694ae0073e492cc9b98bae471543b90eeabee73 as builder
+FROM node:18-slim@sha256:cf909d2c099f4c2ec929b7a00587c56e4704c70f4b93b1a32d245affbfffd35c as builder
 
 WORKDIR /app
 
