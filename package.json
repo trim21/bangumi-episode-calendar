@@ -27,7 +27,7 @@
   "dependencies": {
     "@esbuild-kit/esm-loader": "^2.6.5",
     "@fastify/error": "^3.4.1",
-    "@sinclair/typebox": "~0.32.15",
+    "@sinclair/typebox": "~0.32.20",
     "dayjs": "^1.11.10",
     "fastify": "^4.26.2",
     "got": "^14.2.1",
