@@ -34,7 +34,7 @@
     "ioredis": "^5.4.1",
     "nanoid": "^5.0.6",
     "p-limit": "^5.0.0",
-    "pino": "^8.19.0",
+    "pino": "^8.21.0",
     "pino-pretty": "^11.0.0"
   },
   "devDependencies": {
