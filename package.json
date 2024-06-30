@@ -26,7 +26,7 @@
   "license": "MIT",
   "dependencies": {
     "@esbuild-kit/esm-loader": "^2.6.5",
-    "@fastify/error": "^3.4.1",
+    "@fastify/error": "^4.0.0",
     "@sinclair/typebox": "~0.32.31",
     "dayjs": "^1.11.11",
     "fastify": "^4.27.0",
