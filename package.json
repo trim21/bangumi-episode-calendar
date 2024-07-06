@@ -27,15 +27,15 @@
   "dependencies": {
     "@esbuild-kit/esm-loader": "^2.6.5",
     "@fastify/error": "^4.0.0",
-    "@sinclair/typebox": "~0.32.31",
+    "@sinclair/typebox": "~0.32.34",
     "dayjs": "^1.11.11",
-    "fastify": "^4.27.0",
-    "got": "^14.3.0",
+    "fastify": "^4.28.1",
+    "got": "^14.4.1",
     "ioredis": "^5.4.1",
     "nanoid": "^5.0.7",
     "p-limit": "^5.0.0",
-    "pino": "^9.1.0",
-    "pino-pretty": "^11.1.0"
+    "pino": "^9.2.0",
+    "pino-pretty": "^11.2.1"
   },
   "devDependencies": {
     "@types/ioredis-mock": "^8.2.5",
