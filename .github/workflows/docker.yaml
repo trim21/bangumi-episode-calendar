@@ -29,37 +29,25 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ github.token }}
 
-      - run: |
-          export "TAG_HASH=${FILE_HASH}"
-
-          if ! docker pull "${IMAGE}:base-${TAG_HASH}"; then
-            echo "build base docker image"
-            docker build -t "${IMAGE}:base-${TAG_HASH}" -f etc/base.dockerfile .
-            docker push "${IMAGE}:base-${TAG_HASH}"
-          fi
-
-          docker tag "${IMAGE}:base-${TAG_HASH}" base-image
-
-        env:
-          FILE_HASH: "${{ hashFiles('yarn.lock', 'etc/base.dockerfile') }}"
-
-      - name: Docker meta
+      - name: Docker metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: "${{ env.IMAGE }}"
+          images: ${{ env.IMAGE }}
           tags: |
-            type=ref,event=branch,suffix=-{{ sha }}
-            type=ref,event=branch
-            type=ref,event=branch,suffix=-${{ env.SHA }}
-            # master branch will be the latest tag
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern=v{{version}}
 
-      - name: Build and push
+            type=ref,event=branch
+            type=ref,event=branch,suffix=-{{ sha }}
+
+      - name: Build Final Docker Image
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ./
+          provenance: false
           push: true
-          file: ./etc/main.dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          github-token: ${{ github.token }}
