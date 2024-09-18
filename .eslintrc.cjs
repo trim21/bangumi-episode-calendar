@@ -88,6 +88,14 @@ module.exports = {
       },
     ],
   },
+  overrides: [
+    {
+      files: "tests/**/*.ts",
+      rules: {
+        "n/no-unpublished-import": "off",
+      },
+    },
+  ],
   settings: {
     "import/parsers": {
       "@typescript-eslint/parser": [".ts"],
