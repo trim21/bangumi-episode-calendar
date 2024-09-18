@@ -205,7 +205,7 @@ function renderICS(subjects: SlimSubject[]): string {
         continue;
       }
 
-      const end = new Date(date[0], date[1] - 1, date[2]);
+      const end = ts.toDate();
       end.setDate(end.getDate() + 1);
 
       calendar.createEvent({
