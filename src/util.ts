@@ -1,9 +1,8 @@
-import * as crypto from "crypto";
+import { v5 as uuidV5 } from "uuid";
 
 export function uuidByString(v: string): string {
-  const s = crypto.createHash("blake2b512").update(v, "utf-8").digest("hex");
-
-  return `${s.slice(0, 8)}-${s.slice(8, 12)}-${s.slice(12, 16)}-${s.slice(16, 20)}-${s.slice(20, 32)}`;
+  // uuid v5 will generate same result for same (name, namespace) pair
+  return uuidV5(v, "ef2256c4-162e-446b-9ccf-81050809d0c9");
 }
 
 export function notNull<T>(x: T): x is Exclude<T, null> {
