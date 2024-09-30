@@ -7,7 +7,7 @@ COPY package.json yarn.lock ./
 RUN yarn --prod && \
     rm package.json yarn.lock
 
-FROM gcr.io/distroless/nodejs20@sha256:1cd5ddc2eaa4068efca88d84436e8edefea509512fe438c41bcd738a9d53002f
+FROM gcr.io/distroless/nodejs20@sha256:2818fb8cdc25894d9c6b6e6bf72b4033d949f5d6d65173a6d7aeec0266f03037
 
 ENV NODE_ENV=production
 
