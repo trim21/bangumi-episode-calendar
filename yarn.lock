@@ -276,10 +276,10 @@
   resolved "https://registry.yarnpkg.com/@sec-ant/readable-stream/-/readable-stream-0.4.1.tgz#60de891bb126abfdc5410fdc6166aca065f10a0c"
   integrity sha512-831qok9r2t8AlxLko40y2ebgSDhenenCatLVeW/uBtnHPyhHOvG0C7TvfgecV+wHzIm5KUICgzmVpWS+IMEAeg==
 
-"@sinclair/typebox@~0.33.7":
-  version "0.33.11"
-  resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.33.11.tgz#c416bc2a2d50e22a52ca9b3b0ef585a0eb724dd8"
-  integrity sha512-2+0JxGh5HK1KX660phgcfxw161/TV3n0koonoQ8u65gTeZFHdWI5ujPaGaQmXXtVC6rwEWwPtOoQ8ihyZwt3eg==
+"@sinclair/typebox@~0.33.14":
+  version "0.33.14"
+  resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.33.14.tgz#20deb4d9a63967367a19e36d9756637b4c5c9ea7"
+  integrity sha512-kS30CHXWEPkWNVDvC3m19fG01C6HiiCyZTy+52t4oD/gZqdYTAZUKTCPtMutmkTLHdl6hNzFdDiB01aoaneXDQ==
 
 "@sindresorhus/is@^7.0.0":
   version "7.0.1"
@@ -2825,7 +2825,7 @@ pino-std-serializers@^7.0.0:
   resolved "https://registry.yarnpkg.com/pino-std-serializers/-/pino-std-serializers-7.0.0.tgz#7c625038b13718dbbd84ab446bd673dc52259e3b"
   integrity sha512-e906FRY0+tV27iq4juKzSYPbUj2do2X2JX4EzSca1631EB2QJQUqGbDuERal7LCtOpxl6x3+nvo9NPZcmjkiFA==
 
-pino@^9.0.0, pino@^9.3.2:
+pino@^9.0.0, pino@^9.4.0:
   version "9.4.0"
   resolved "https://registry.yarnpkg.com/pino/-/pino-9.4.0.tgz#e4600ff199efc744856a5b3b71c53e38998eae5a"
   integrity sha512-nbkQb5+9YPhQRz/BeQmrWpEknAaqjpAqRK8NwJpmrX/JHu7JuZC5G1CeAwJDJfGes4h+YihC6in3Q2nGb+Y09w==

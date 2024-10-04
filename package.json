@@ -28,14 +28,14 @@
   "dependencies": {
     "@esbuild-kit/esm-loader": "^2.6.5",
     "@fastify/error": "^4.0.0",
-    "@sinclair/typebox": "~0.33.7",
+    "@sinclair/typebox": "~0.33.14",
     "dayjs": "^1.11.13",
     "fastify": "^4.28.1",
     "got": "^14.4.2",
     "ioredis": "^5.4.1",
     "nanoid": "^5.0.7",
     "p-limit": "^6.1.0",
-    "pino": "^9.3.2",
+    "pino": "^9.4.0",
     "pino-pretty": "^11.2.2",
     "uuid": "^10.0.0"
   },
