@@ -1,6 +1,7 @@
 import pLimit from "p-limit";
 import { createError } from "@fastify/error";
 import dayjs from "dayjs";
+import * as lo from "lodash-es";
 
 import type { Collection, Episode, Paged, Subject } from "./bangumi";
 import type { Cache } from "./cache";
@@ -148,7 +149,7 @@ async function fetchAllEpisode(subjectID: number): Promise<Array<ParsedEpisode>>
       return {
         id: episode.id,
         sort: episode.sort,
-        name: episode.name_cn || episode.name,
+        name: lo.unescape(episode.name_cn || episode.name),
         air_date: [year, month, day],
         duration: episode.duration,
       };
@@ -262,7 +263,7 @@ class ICalendar {
       `SUMMARY:${event.summary}`,
     );
 
-    let description: string[] = [];
+    let description: string[] = [`https://bgm.tv/ep/${event.episodeID}`];
 
     if (event.description) {
       description.push(event.description);
@@ -273,7 +274,7 @@ class ICalendar {
     }
 
     if (description.length) {
-      this.lines.push(`DESCRIPTION:${description.join("\\n\\n")}`);
+      this.lines.push(`DESCRIPTION:${description.join("\\n")}`);
     }
 
     this.lines.push("END:VEVENT");
