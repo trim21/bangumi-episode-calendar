@@ -1,9 +1,9 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 
-import type { Static, TSchema } from "@sinclair/typebox";
+import type { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
 import { Type as t } from "@sinclair/typebox";
-import type { FastifyInstance, FastifyReply, FastifyTypeProvider } from "fastify";
+import type { FastifyInstance, FastifyReply } from "fastify";
 import type { FastifyBaseLogger } from "fastify/types/logger";
 import type { RawReplyDefaultExpression, RawRequestDefaultExpression, RawServerDefault } from "fastify/types/utils";
 
@@ -15,11 +15,6 @@ import redis from "./redis";
 const cache = new Cache(redis);
 const bangumiCalendarHTML = fs.readFileSync(path.join(projectRoot, "./src/bangumi-calendar.html"));
 
-// from https://github.com/fastify/fastify-type-provider-typebox/blob/82b8ea42c1ab440a092d866d1e6195a2e43b65f1/index.ts#L56
-export interface TypeBoxTypeProvider extends FastifyTypeProvider {
-  output: this["input"] extends TSchema ? Static<this["input"]> : never;
-}
-
 type App = FastifyInstance<
   RawServerDefault,
   RawRequestDefaultExpression,
@@ -28,25 +23,25 @@ type App = FastifyInstance<
   TypeBoxTypeProvider
 >;
 
-export async function setup(app: App) {
-  async function handler(username: string | undefined, res: FastifyReply) {
-    if (!username) {
-      return res.type("text/html").send(bangumiCalendarHTML);
-    }
-
-    const cacheKey = `episode-calendar-v5.0-${username}`;
-
-    const cached = await cache.get(cacheKey);
-    if (cached) {
-      return res.send(cached);
-    }
-
-    const ics = await buildICS(username, cache);
-
-    await cache.set(cacheKey, ics, 60 * 60 * 23);
-    return res.send(ics);
+async function handler(username: string | undefined, res: FastifyReply) {
+  if (!username) {
+    return res.type("text/html").send(bangumiCalendarHTML);
   }
 
+  const cacheKey = `episode-calendar-v5.0-${username}`;
+
+  const cached = await cache.get(cacheKey);
+  if (cached) {
+    return res.send(cached);
+  }
+
+  const ics = await buildICS(username, cache);
+
+  await cache.set(cacheKey, ics, 60 * 60 * 23);
+  return res.send(ics);
+}
+
+export async function setup(app: App) {
   app.get(
     "/episode-calendar/:username.ics",
     {
