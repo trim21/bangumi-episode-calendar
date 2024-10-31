@@ -1,20 +1,37 @@
-FROM node:20.17.0-slim@sha256:2394e403d45a644e41ac2a15b6f843a7d4a99ad24be48c27982c5fdc61a1ef17 AS builder
+FROM node:20.18.0-slim@sha256:ec35a66c9a0a275b027debde05247c081f8b2f0c43d7399d3a6ad5660cee2f6a AS base
 
 WORKDIR /app
+
+# build dist/index.mjs
+FROM base AS builder
 
 COPY package.json yarn.lock ./
 
-RUN yarn --prod && \
-    rm package.json yarn.lock
+RUN corepack enable && corepack prepare --activate \
+  && yarn install --frozen-lockfile
 
-FROM gcr.io/distroless/nodejs20@sha256:2818fb8cdc25894d9c6b6e6bf72b4033d949f5d6d65173a6d7aeec0266f03037
+COPY . ./
+
+RUN yarn run build
+
+FROM base AS prod-deps
+
+COPY package.json yarn.lock ./
+
+RUN corepack enable && corepack prepare --activate \
+  && npm pkg delete scripts.prepare \
+  && yarn install --prod --frozen-lockfile
+
+FROM base AS final
+
+ENTRYPOINT ["node", "--enable-source-maps", "./dist/index.mjs"]
 
 ENV NODE_ENV=production
 
-WORKDIR /app
+COPY --from=prod-deps /app/ /app/
 
-ENTRYPOINT [ "/nodejs/bin/node", "--no-warnings", "--loader=@esbuild-kit/esm-loader", "--enable-source-maps", "./src/main.ts" ]
+ARG ARG_REF
+ENV REF=$ARG_REF
 
-COPY --from=builder /app/ /app
-
+COPY --from=builder /app/dist /app/dist
 COPY . ./

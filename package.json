@@ -12,10 +12,10 @@
   "scripts": {
     "format": "prettier -w ./",
     "lint": "eslint --ext ts ./",
-    "build": "tsc --noEmit",
+    "build": "node build.mjs",
     "start": "nodemon",
     "dev": "yarn start --watch",
-    "test": "cross-env NODE_OPTIONS=\"-r dotenv/config --loader=@esbuild-kit/esm-loader\" ava",
+    "test": "vitest --run",
     "lint-staged": "lint-staged",
     "prepare": "husky"
   },
@@ -26,7 +26,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@esbuild-kit/esm-loader": "^2.6.5",
     "@fastify/error": "^4.0.0",
     "@sinclair/typebox": "~0.33.14",
     "dayjs": "^1.11.13",
@@ -47,9 +46,10 @@
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
-    "ava": "^6.1.3",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
+    "esbuild": "^0.24.0",
+    "esbuild-node-externals": "^1.15.0",
     "eslint": "^8.57.1",
     "eslint-import-resolver-typescript": "^3.6.3",
     "eslint-plugin-import": "^2.31.0",
@@ -58,7 +58,9 @@
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
     "prettier": "^3.3.3",
-    "typescript": "~5.5.4"
+    "tsx": "^4.19.2",
+    "typescript": "~5.5.4",
+    "vitest": "^2.1.4"
   },
   "nodemonConfig": {
     "restartable": "rs",
@@ -72,7 +74,7 @@
       ".env"
     ],
     "execMap": {
-      "ts": "node --no-warnings -r dotenv/config --loader @esbuild-kit/esm-loader --enable-source-maps"
+      "ts": "node --no-warnings -r dotenv/config --import tsx/esm"
     },
     "ext": "ts,js,json,html"
   },
