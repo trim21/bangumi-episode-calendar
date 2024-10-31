@@ -23,3 +23,14 @@ exports[`should get index page 1`] = `
 </html>
 "
 `;
+
+exports[`should get user calendar 1`] = `
+"BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//trim21//bangumi-icalendar//CN
+NAME:Bangumi Episode Air Calendar
+X-WR-CALNAME:Bangumi Episode Air Calendar
+X-PUBLISHED-TTL:PT8H
+REFRESH-INTERVAL;VALUE=DURATION:PT8H
+END:VCALENDAR"
+`;
