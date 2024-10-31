@@ -1,16 +1,16 @@
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 
-import type { FastifyInstance, FastifyReply, FastifyTypeProvider } from "fastify";
 import type { Static, TSchema } from "@sinclair/typebox";
 import { Type as t } from "@sinclair/typebox";
-import type { RawReplyDefaultExpression, RawRequestDefaultExpression, RawServerDefault } from "fastify/types/utils";
+import type { FastifyInstance, FastifyReply, FastifyTypeProvider } from "fastify";
 import type { FastifyBaseLogger } from "fastify/types/logger";
+import type { RawReplyDefaultExpression, RawRequestDefaultExpression, RawServerDefault } from "fastify/types/utils";
 
 import { Cache } from "./cache";
-import redis from "./redis";
-import { projectRoot } from "./config";
 import { buildICS } from "./calendar";
+import { projectRoot } from "./config";
+import redis from "./redis";
 
 const cache = new Cache(redis);
 const bangumiCalendarHTML = fs.readFileSync(path.join(projectRoot, "./src/bangumi-calendar.html"));

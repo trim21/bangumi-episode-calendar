@@ -1,7 +1,7 @@
 export interface Collection {
   updated_at: Date;
   comment: string | null;
-  tags: any[];
+  tags: string[];
   subject_id: number;
   ep_status: number;
   vol_status: number;

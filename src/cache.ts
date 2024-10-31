@@ -3,7 +3,7 @@ import type { default as Redis } from "ioredis";
 export class Cache {
   constructor(private readonly redis: Redis) {}
 
-  async set(key: string, value: any, ttlSeconds: number) {
+  async set(key: string, value: unknown, ttlSeconds: number) {
     await this.redis.set(key, JSON.stringify(value), "EX", ttlSeconds);
   }
 
@@ -13,6 +13,6 @@ export class Cache {
       return undefined;
     }
 
-    return JSON.parse(raw);
+    return JSON.parse(raw) as T;
   }
 }

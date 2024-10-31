@@ -1,13 +1,13 @@
-import pLimit from "p-limit";
 import { createError } from "@fastify/error";
 import dayjs from "dayjs";
 import * as lo from "lodash-es";
+import pLimit from "p-limit";
 
 import type { Collection, Episode, Paged, Subject } from "./bangumi";
 import type { Cache } from "./cache";
+import { logger } from "./logger";
 import { get } from "./request";
 import { notNull, unix, uuidByString } from "./util";
-import { logger } from "./logger";
 
 const NotFoundError = createError("NOT_FOUND", "%s", 404);
 
@@ -15,22 +15,22 @@ const limit = pLimit(20);
 
 export async function buildICS(username: string, cache: Cache): Promise<string> {
   logger.info(`fetching collection of user ${username}`);
-  let collections: Array<Collection> = await fetchAllUserCollection(username);
+  const collections: Collection[] = await fetchAllUserCollection(username);
 
   const subjects: SlimSubject[] = (
     await Promise.all(collections.map((s) => limit(() => getSubjectInfo(s.subject_id, cache))))
   )
     .filter(notNull)
-    .filter((s) => s.future_episodes.length !== 0);
+    .filter((s) => s.future_episodes.length > 0);
 
   return renderICS(subjects);
 }
 
-async function fetchAllUserCollection(username: string, pageSize: number = 50): Promise<Array<Collection>> {
-  const data: Array<Collection> = [];
+async function fetchAllUserCollection(username: string, pageSize = 50): Promise<Collection[]> {
+  const data: Collection[] = [];
 
   for (const collectionType of [1, 3]) {
-    let offset: number = 0;
+    let offset = 0;
     let body: Paged<Collection>;
     do {
       const res = await get(`v0/users/${username}/collections`, {
@@ -65,7 +65,7 @@ async function fetchAllUserCollection(username: string, pageSize: number = 50): 
 interface SlimSubject {
   name: string;
   id: number;
-  future_episodes: Array<ParsedEpisode>;
+  future_episodes: ParsedEpisode[];
 }
 
 async function getSubjectInfo(subjectID: number, cache: Cache): Promise<SlimSubject | null> {
@@ -76,7 +76,6 @@ async function getSubjectInfo(subjectID: number, cache: Cache): Promise<SlimSubj
     return cached;
   }
 
-  let data: SlimSubject;
   let total_episode = 0;
 
   logger.info(`fetching subject ${subjectID}`);
@@ -87,7 +86,7 @@ async function getSubjectInfo(subjectID: number, cache: Cache): Promise<SlimSubj
   }
   const s = JSON.parse(body) as Subject;
   total_episode = s.total_episodes;
-  data = {
+  const data: SlimSubject = {
     id: s.id,
     name: s.name_cn || s.name,
     future_episodes: [],
@@ -103,7 +102,7 @@ async function getSubjectInfo(subjectID: number, cache: Cache): Promise<SlimSubj
       return ts.unix() > today;
     });
 
-    if (all_episodes.length !== 0 && future_episodes.length === 0 && all_episodes.length <= 200) {
+    if (all_episodes.length > 0 && future_episodes.length === 0 && all_episodes.length <= 200) {
       // no future episodes, just cache it longer than normal episode
       await cache.set(cacheKey, data, 60 * 60 * 24 * 7);
       return data;
@@ -126,15 +125,15 @@ interface ParsedEpisode {
   duration: string;
 }
 
-async function fetchAllEpisode(subjectID: number): Promise<Array<ParsedEpisode>> {
+async function fetchAllEpisode(subjectID: number): Promise<ParsedEpisode[]> {
   const res = await _fetchAllEpisode(subjectID);
 
   return res
     .map((episode): ParsedEpisode | null => {
       const date: number[] = episode.airdate
         .split("-")
-        .map((x) => parseInt(x, 10))
-        .filter((x) => !isNaN(x))
+        .map((x) => Number.parseInt(x, 10))
+        .filter((x) => !Number.isNaN(x))
         .filter((x) => x !== null);
       if (date.length != 3) {
         return null;
@@ -157,9 +156,9 @@ async function fetchAllEpisode(subjectID: number): Promise<Array<ParsedEpisode>>
     .filter(notNull);
 }
 
-async function _fetchAllEpisode(subjectID: number, pageSize: number = 200): Promise<Array<Episode>> {
-  const data: Array<Episode> = [];
-  let offset: number = 0;
+async function _fetchAllEpisode(subjectID: number, pageSize = 200): Promise<Episode[]> {
+  const data: Episode[] = [];
+  let offset = 0;
   let res: Paged<Episode>;
 
   do {
@@ -263,7 +262,7 @@ class ICalendar {
       `SUMMARY:${event.summary}`,
     );
 
-    let description: string[] = [`https://bgm.tv/ep/${event.episodeID}`];
+    const description: string[] = [`https://bgm.tv/ep/${event.episodeID}`];
 
     if (event.description) {
       description.push(event.description);
@@ -273,8 +272,8 @@ class ICalendar {
       description.push("时长：" + event.duration);
     }
 
-    if (description.length) {
-      this.lines.push(`DESCRIPTION:${description.join("\\n")}`);
+    if (description.length > 0) {
+      this.lines.push(`DESCRIPTION:${description.join(String.raw`\n`)}`);
     }
 
     this.lines.push("END:VEVENT");

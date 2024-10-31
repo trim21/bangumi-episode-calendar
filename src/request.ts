@@ -1,5 +1,5 @@
-import { got } from "got";
 import type { OptionsInit } from "got";
+import { got } from "got";
 
 interface Res {
   code: number;

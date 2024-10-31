@@ -5,7 +5,7 @@ import { logger } from "./logger";
 import { createServer } from "./server";
 
 if (process.argv.includes("--help") || process.argv.includes("-h")) {
-  // eslint-disable-next-line n/no-process-exit
+  // eslint-disable-next-line unicorn/no-process-exit
   process.exit(0);
 }
 

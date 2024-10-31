@@ -10,5 +10,5 @@ export function notNull<T>(x: T): x is Exclude<T, null> {
 }
 
 export function unix(): number {
-  return Math.trunc(new Date().getTime() / 1000);
+  return Math.trunc(Date.now() / 1000);
 }
