@@ -5,6 +5,7 @@ on:
     branches:
       - "**"
       - "!renovate/**"
+      - "!dependabot/**"
 
 jobs:
   docker:
