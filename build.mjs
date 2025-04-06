@@ -20,7 +20,7 @@ await esbuild.build({
       name: "import.meta.url",
       // eslint-disable-next-line @typescript-eslint/unbound-method
       setup({ onLoad }) {
-        onLoad({ filter: /.*\.ts/g, namespace: "file" }, (args) => {
+        onLoad({ filter: /.*\.ts/, namespace: "file" }, (args) => {
           let code = fs.readFileSync(args.path, "utf8");
           code = code
             .replaceAll(/\bimport\.meta\.url\b/g, JSON.stringify(url.pathToFileURL(args.path)))
