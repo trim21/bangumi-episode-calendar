@@ -1,0 +1,6 @@
+version: 3
+tasks:
+  dev:
+    cmds:
+      - go build -o dist/app.exe
+      - ./dist/app.exe

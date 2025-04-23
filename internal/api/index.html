@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta
+        name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Bangumi Calendar User</title>
+    <style>
+        body { font-family: sans-serif; padding: 2em; }
+        label { display: block; margin-bottom: 0.5em; }
+        input[type="text"] { padding: 0.5em; margin-right: 0.5em; }
+        button { padding: 0.5em 1em; }
+    </style>
+</head>
+<body>
+    <h1>Bangumi Episode Calendar</h1>
+    <!-- Changed action to match the Go API route structure -->
+    <form action="/episode-calendar" method="get" id="calendar-form">
+        <label for="username-input">Enter Bangumi Username:</label>
+        <input required type="text" name="username" id="username-input" placeholder="e.g., trim21" />
+        <button type="submit">View Calendar</button>
+    </form>
+</body>
+</html>

@@ -1,37 +1,33 @@
-FROM node:20.19.0-slim@sha256:5cfa999422613d3b34f766cbb814d964cbfcb76aaf3607e805da21cccb352bac AS base
+# Build stage
+FROM golang:1.22-alpine AS builder
 
 WORKDIR /app
 
-# build dist/index.mjs
-FROM base AS builder
+# Copy go mod and sum files
+COPY go.mod go.sum ./
+# Download dependencies
+RUN go mod download
 
-COPY package.json yarn.lock ./
+# Copy the source code
+COPY . .
 
-RUN corepack enable && corepack prepare --activate \
-  && yarn install --frozen-lockfile
+# Build the application
+# -ldflags="-w -s" strips debug information and symbols for smaller binary
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o /server ./cmd/server
 
-COPY . ./
+# Final stage
+FROM alpine:latest
 
-RUN yarn run build
+WORKDIR /app
 
-FROM base AS prod-deps
+# Copy the binary from the builder stage
+COPY --from=builder /server /app/server
 
-COPY package.json yarn.lock ./
+# Copy potential templates or static files if needed
+# COPY --from=builder /app/templates /app/templates
 
-RUN corepack enable && corepack prepare --activate \
-  && npm pkg delete scripts.prepare \
-  && yarn install --prod --frozen-lockfile
+# Expose the port the app runs on
+EXPOSE 8080
 
-FROM base AS final
-
-ENTRYPOINT ["node", "--enable-source-maps", "./dist/index.mjs"]
-
-ENV NODE_ENV=production
-
-COPY --from=prod-deps /app/ /app/
-
-ARG ARG_REF
-ENV REF=$ARG_REF
-
-COPY --from=builder /app/dist /app/dist
-COPY . ./
+# Command to run the application
+CMD ["/app/server"]
