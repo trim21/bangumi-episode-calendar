@@ -1,7 +1,5 @@
 import { nanoid } from "nanoid";
 
-import { production } from "./config";
-import { logger } from "./logger";
 import { createServer } from "./server";
 
 if (process.argv.includes("--help") || process.argv.includes("-h")) {
@@ -10,7 +8,6 @@ if (process.argv.includes("--help") || process.argv.includes("-h")) {
 }
 
 const server = await createServer({
-  logger: logger.child({ name: "fastify" }, { level: production ? "warn" : "info" }),
   disableRequestLogging: process.env.ENABLE_REQUEST_LOGGING !== "true",
   genReqId: (): string => {
     return `dummy-ray-${nanoid()}`;
