@@ -11,6 +11,9 @@
     "fileMatch": [".*dockerfile$"],
     "enabled": true
   },
+  "lockFileMaintenance": {
+    "automerge": true
+  },
   "docker-compose": {
     "enabled": false
   },
