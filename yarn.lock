@@ -450,10 +450,10 @@
   resolved "https://registry.yarnpkg.com/@sec-ant/readable-stream/-/readable-stream-0.4.1.tgz#60de891bb126abfdc5410fdc6166aca065f10a0c"
   integrity sha512-831qok9r2t8AlxLko40y2ebgSDhenenCatLVeW/uBtnHPyhHOvG0C7TvfgecV+wHzIm5KUICgzmVpWS+IMEAeg==
 
-"@sinclair/typebox@~0.34.33":
-  version "0.34.36"
-  resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.34.36.tgz#cbf53a007afa34e5f442b75888f9719f2ab463bb"
-  integrity sha512-JFHFhF6MqqRE49JDAGX/EPlHwxIukrKMhNwlMoB/wIJBkvu3+ciO335yDYPP3soI01FkhVXWnyNPKEl+EsC4Zw==
+"@sinclair/typebox@~0.34.37":
+  version "0.34.37"
+  resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.34.37.tgz#f331e4db64ff8195e9e3d8449343c85aaa237d6e"
+  integrity sha512-2TRuQVgQYfy+EzHRTIvkhv2ADEouJ2xNS/Vq+W5EuuewBdOrvATvljZTxHWZSTYr2sTjTHpGvucaGAt67S2akw==
 
 "@sindresorhus/is@^7.0.1":
   version "7.0.2"
@@ -1337,7 +1337,7 @@ fast-uri@^3.0.0, fast-uri@^3.0.1:
   resolved "https://registry.yarnpkg.com/fast-uri/-/fast-uri-3.0.6.tgz#88f130b77cfaea2378d56bf970dea21257a68748"
   integrity sha512-Atfo14OibSv5wAp4VWNsFYE1AchQRTv9cBGWET4pZWHzYshFSS9NQI6I57rdKn9croWVMbYFbLhJ+yJvmZIIHw==
 
-fastify@^5.3.3:
+fastify@^5.4.0:
   version "5.4.0"
   resolved "https://registry.yarnpkg.com/fastify/-/fastify-5.4.0.tgz#82bf56e0bc36ba8dfb0bd372a0de8b62ccf3287c"
   integrity sha512-I4dVlUe+WNQAhKSyv15w+dwUh2EPiEl4X2lGYMmNSgF83WzTMAPKGdWEv5tPsCQOb+SOZwz8Vlta2vF+OeDgRw==
