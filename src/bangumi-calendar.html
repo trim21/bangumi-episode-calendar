@@ -1,20 +1,142 @@
-<!doctype html>
-<html lang="en">
-  <head>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Document</title>
-  </head>
-  <body>
-    <form action="/episode-calendar" method="get">
-      <label>
-        <input required type="text" name="username" placeholder="username" />
-      </label>
-      <button type="submit">转跳</button>
-    </form>
-  </body>
+    <title>Bangumi 追番日历</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* 基本样式重置和字体定义 */
+        *, ::before, ::after { box-sizing: border-box; border-width: 0; border-style: solid; border-color: #e5e7eb; }
+        html { line-height: 1.5; -webkit-text-size-adjust: 100%; -moz-tab-size: 4; tab-size: 4; font-family: 'Inter', sans-serif; }
+        body { margin: 0; line-height: inherit; font-family: 'Inter', sans-serif; }
+        /* 暗黑模式和基本布局 */
+        .bg-gray-100 { background-color: #f3f4f6; }
+        .text-gray-800 { color: #1f2937; }
+        .dark .dark\:bg-gray-900 { background-color: #111827; }
+        .dark .dark\:text-gray-200 { color: #e5e7eb; }
+        .flex { display: flex; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        .min-h-screen { min-height: 100vh; }
+        .p-4 { padding: 1rem; }
+        .w-full { width: 100%; }
+        .max-w-md { max-width: 28rem; }
+        .p-8 { padding: 2rem; }
+        .space-y-6 > :not([hidden]) ~ :not([hidden]) { --tw-space-y-reverse: 0; margin-top: calc(1.5rem * calc(1 - var(--tw-space-y-reverse))); margin-bottom: calc(1.5rem * var(--tw-space-y-reverse)); }
+        .bg-white { background-color: #ffffff; }
+        .dark .dark\:bg-gray-800 { background-color: #1f2937; }
+        .rounded-2xl { border-radius: 1rem; }
+        .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); }
+        .text-center { text-align: center; }
+        /* 文本和标题 */
+        .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+        .font-bold { font-weight: 700; }
+        .text-gray-900 { color: #111827; }
+        .dark .dark\:text-white { color: #ffffff; }
+        .mt-2 { margin-top: 0.5rem; }
+        .text-gray-600 { color: #4b5563; }
+        .dark .dark\:text-gray-400 { color: #9ca3af; }
+        /* 表单和输入框 */
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
+        .relative { position: relative; }
+        .absolute { position: absolute; }
+        .inset-y-0 { top: 0; bottom: 0; }
+        .left-0 { left: 0; }
+        .pl-3 { padding-left: 0.75rem; }
+        .pointer-events-none { pointer-events: none; }
+        .h-5 { height: 1.25rem; }
+        .w-5 { width: 1.25rem; }
+        .text-gray-400 { color: #9ca3af; }
+        .pl-10 { padding-left: 2.5rem; }
+        .pr-4 { padding-right: 1rem; }
+        .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+        .bg-gray-50 { background-color: #f9fafb; }
+        .dark .dark\:bg-gray-700 { background-color: #374151; }
+        .border { border-width: 1px; }
+        .border-gray-300 { border-color: #d1d5db; }
+        .dark .dark\:border-gray-600 { border-color: #4b5563; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .placeholder-gray-400::placeholder { color: #9ca3af; }
+        .dark .dark\:placeholder-gray-500::placeholder { color: #6b7280; }
+        .focus\:outline-none:focus { outline: 2px solid transparent; outline-offset: 2px; }
+        .focus\:ring-2:focus { --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color); --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color); box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000); }
+        .focus\:ring-pink-500:focus { --tw-ring-color: #ec4899; }
+        .focus\:border-pink-500:focus { border-color: #ec4899; }
+        .transition { transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+        .duration-200 { transition-duration: 200ms; }
+        /* 按钮 */
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .font-semibold { font-weight: 600; }
+        .text-white { color: #ffffff; }
+        .bg-pink-600 { background-color: #db2777; }
+        .hover\:bg-pink-700:hover { background-color: #be185d; }
+        .focus\:ring-4:focus { --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color); --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color); box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000); }
+        .focus\:ring-opacity-50:focus { --tw-ring-opacity: 0.5; }
+        .transition-transform { transition-property: transform; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+        .transform { transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y)); }
+        .hover\:scale-105:hover { --tw-scale-x: 1.05; --tw-scale-y: 1.05; transform: scale(1.05); }
+        .duration-300 { transition-duration: 300ms; }
+        /* 页脚 */
+        .text-xs { font-size: 0.75rem; line-height: 1rem; }
+        .text-gray-500 { color: #6b7280; }
+        .font-medium { font-weight: 500; }
+        .text-pink-500 { color: #ec4899; }
+        .hover\:underline:hover { text-decoration-line: underline; }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+    <main class="flex items-center justify-center min-h-screen p-4">
+        <div class="w-full max-w-md p-8 space-y-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg">
+            
+            <div class="text-center">
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+                    Bangumi 追番日历
+                </h1>
+                <p class="mt-2 text-gray-600 dark:text-gray-400">
+                    输入你的 Bangumi 用户名，生成专属追番日历。
+                </p>
+            </div>
+
+            <form action="/episode-calendar" method="get" class="space-y-6">
+                <div>
+                    <label for="username" class="sr-only">用户名</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <input 
+                            id="username"
+                            name="username" 
+                            type="text" 
+                            required 
+                            class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition duration-200" 
+                            placeholder="你的 Bangumi 用户名"
+                        />
+                    </div>
+                </div>
+                
+                <button 
+                    type="submit" 
+                    class="w-full px-4 py-3 font-semibold text-white bg-pink-600 rounded-lg hover:bg-pink-700 focus:outline-none focus:ring-4 focus:ring-pink-500 focus:ring-opacity-50 transition-transform transform hover:scale-105 duration-300"
+                >
+                    生成日历
+                </button>
+            </form>
+            
+            <p class="text-xs text-center text-gray-500 dark:text-gray-400">
+                这是一个基于
+                <a href="https://github.com/trim21/bangumi-episode-calendar" target="_blank" rel="noopener noreferrer" class="font-medium text-pink-500 hover:underline">
+                    bangumi-episode-calendar
+                </a>
+                项目的前端页面。
+            </p>
+        </div>
+    </main>
+</body>
 </html>
