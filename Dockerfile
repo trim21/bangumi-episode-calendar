@@ -1,4 +1,4 @@
-FROM node:20.19.5-slim@sha256:12541e65a3777c6035245518eb43006ed08ca8c684e68cd04ecb4653bdf6cfe1 AS base
+FROM node:20.19.6-slim@sha256:b12539c5bb7bca01d3eeac5b0ae1946962ffbafd93ba198b4f58034bc12304ce AS base
 
 WORKDIR /app
 
