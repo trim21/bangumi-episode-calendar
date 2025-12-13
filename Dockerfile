@@ -1,18 +1,17 @@
-FROM golang:1.22-bookworm AS builder
+FROM rust:1-bookworm AS builder
 
 WORKDIR /src
-ENV CGO_ENABLED=0
 
-COPY go.mod go.sum ./
-RUN go mod download
+COPY Cargo.toml Cargo.lock ./
+COPY src ./src
+COPY assets ./assets
 
-COPY . .
-RUN go build -trimpath -o /out/server ./cmd/server
+RUN cargo build --release --locked
 
 FROM gcr.io/distroless/base-debian12:nonroot
 WORKDIR /app
 
-COPY --from=builder /out/server /app/server
+COPY --from=builder /src/target/release/bangumi-episode-calendar /app/server
 
 EXPOSE 3000
 ENTRYPOINT ["/app/server"]

@@ -2,13 +2,15 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "local>Trim21/renovate-config",
-    "github>Trim21/renovate-config:js",
+    "github>Trim21/renovate-config:rust",
     "github>Trim21/renovate-config:app",
     "github>Trim21/renovate-config:monthly"
   ],
   "rangeStrategy": "bump",
   "dockerfile": {
-    "fileMatch": [".*dockerfile$"],
+    "fileMatch": [
+      ".*dockerfile$"
+    ],
     "enabled": true
   },
   "lockFileMaintenance": {
@@ -19,12 +21,5 @@
   },
   "nodenv": {
     "enabled": false
-  },
-  "packageRules": [
-    {
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["node", "gcr.io/distroless/nodejs20"],
-      "pinDigests": true
-    }
-  ]
+  }
 }

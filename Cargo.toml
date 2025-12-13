@@ -1,0 +1,34 @@
+[package]
+name = "bangumi-episode-calendar"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1"
+axum = { version = "0.8", features = ["macros"] }
+chrono = { version = "0.4", default-features = false, features = ["clock"] }
+async-trait = "0.1"
+futures = "0.3"
+reqwest = { version = "0.12", default-features = false, features = [
+  "json",
+  "rustls-tls"
+] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "signal"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+urlencoding = "2"
+uuid = { version = "1", features = ["v5"] }
+# Redis cache
+redis = { version = "0.27", features = ["tokio-comp", "connection-manager"] }
+# Optional request logging middleware
+tower-http = { version = "0.6", features = ["trace"] }
+axum-macros = "0.5.0"
+
+[dev-dependencies]
+http = "1"
+http-body-util = "0.1"
+hyper = { version = "1", features = ["client"] }
+tower = "0.5"
