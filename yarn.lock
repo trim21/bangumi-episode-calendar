@@ -381,10 +381,10 @@
     "@fastify/forwarded" "^3.0.0"
     ipaddr.js "^2.1.0"
 
-"@fastify/type-provider-typebox@^5.2.0":
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/@fastify/type-provider-typebox/-/type-provider-typebox-5.2.0.tgz#d04b7ce431aa217cf085e3aabc3f051c764acc01"
-  integrity sha512-RoUFTQNYlaVM/gXosFqlrUAD/JHC+OXLcj4DxNoMOag2GI7OydfCt+3vdT+6D2daJwhGAdkpxB0wLNqS7gf4CQ==
+"@fastify/type-provider-typebox@^6.1.0":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/@fastify/type-provider-typebox/-/type-provider-typebox-6.1.0.tgz#566897c5aa4c7bbe40c57a1a96e702f82f2b3b00"
+  integrity sha512-k29cOitDRcZhMXVjtRq0+caKxdWoArz7su+dQWGzGWnFG+fSKhevgiZ7nexHWuXOEEQzgJlh6cptIMu69beaTA==
 
 "@humanfs/core@^0.19.1":
   version "0.19.1"
