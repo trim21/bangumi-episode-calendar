@@ -11,14 +11,14 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     env:
-      IMAGE: "ghcr.io/trim21/bangumi-workers"
+      IMAGE: "ghcr.io/trim21/bangumi-episode-calendar"
 
     concurrency:
       group: ${{ github.workflow }}-${{ github.sha }}
       cancel-in-progress: false
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
 
       - run: echo "SHA=$(git show --no-patch --no-notes --date=short-local --pretty='%as-%h')" >> $GITHUB_ENV
         env:
@@ -47,8 +47,10 @@ jobs:
       - name: Build Final Docker Image
         uses: docker/build-push-action@v6
         with:
-          context: ./
+          context: .
+          file: Dockerfile
           provenance: false
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

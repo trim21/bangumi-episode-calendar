@@ -1,7 +1,14 @@
-node_modules/*
 .vscode
 .idea
-dist
-yarn-error.log
-.eslintcache
 .env
+
+# Go build artifacts
+bin/
+*.exe
+*.test
+*.out
+
+# Misc
+dist/
+node_modules/
+*.log
