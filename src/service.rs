@@ -240,18 +240,28 @@ fn parse_episode(ep: bangumi::Episode) -> Option<calendar::ParsedEpisode> {
     })
 }
 
+fn month_start_with_offset(date: chrono::NaiveDate, offset: i32) -> chrono::NaiveDate {
+    let mut year = date.year();
+    let mut month = date.month() as i32 + offset;
+    while month > 12 {
+        year += 1;
+        month -= 12;
+    }
+    while month < 1 {
+        year -= 1;
+        month += 12;
+    }
+    chrono::NaiveDate::from_ymd_opt(year, month as u32, 1)
+        .expect("failed to compute month start with offset")
+}
+
 fn filter_future_episodes(episodes: &[calendar::ParsedEpisode]) -> Vec<calendar::ParsedEpisode> {
     let today = chrono::Utc::now().date_naive();
-    let current_month_start = today.with_day(1).expect("valid current month");
-    let prev_month_start = (current_month_start - chrono::Duration::days(1))
+    let current_month_start = today
         .with_day(1)
-        .expect("valid prev month");
-    let next_month_start = (current_month_start + chrono::Duration::days(32))
-        .with_day(1)
-        .expect("valid next month");
-    let month_after_next_start = (next_month_start + chrono::Duration::days(32))
-        .with_day(1)
-        .expect("valid month after next");
+        .expect("failed to set day to 1 for current month");
+    let prev_month_start = month_start_with_offset(current_month_start, -1);
+    let month_after_next_start = month_start_with_offset(current_month_start, 2);
     episodes
         .iter()
         .filter_map(|ep| {
@@ -273,15 +283,9 @@ mod tests {
     fn include_previous_current_and_next_month() {
         let today = chrono::Utc::now().date_naive();
         let current_month_start = today.with_day(1).unwrap();
-        let prev_month_start = (current_month_start - chrono::Duration::days(1))
-            .with_day(1)
-            .unwrap();
-        let next_month_start = (current_month_start + chrono::Duration::days(32))
-            .with_day(1)
-            .unwrap();
-        let month_after_next_start = (next_month_start + chrono::Duration::days(32))
-            .with_day(1)
-            .unwrap();
+        let prev_month_start = month_start_with_offset(current_month_start, -1);
+        let next_month_start = month_start_with_offset(current_month_start, 1);
+        let month_after_next_start = month_start_with_offset(current_month_start, 2);
 
         let episodes = vec![
             parsed_episode(prev_month_start, 1.0, 1),
