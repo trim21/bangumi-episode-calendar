@@ -45,10 +45,11 @@ impl RedisCache {
 
         // Force an early round-trip so we fail fast on auth/network issues.
         let mut conn = manager.clone();
-        let _pong: String = time::timeout(connect_timeout, redis::cmd("PING").query_async(&mut conn))
-            .await
-            .context("redis PING timeout")?
-            .context("redis PING")?;
+        let _pong: String =
+            time::timeout(connect_timeout, redis::cmd("PING").query_async(&mut conn))
+                .await
+                .context("redis PING timeout")?
+                .context("redis PING")?;
 
         Ok(Self { manager })
     }

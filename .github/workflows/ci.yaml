@@ -3,12 +3,12 @@ name: CI
 on:
   pull_request:
     branches:
-      - "**"
+      - '**'
   push:
     branches:
-      - "**"
-      - "!renovate/**"
-      - "!dependabot/**"
+      - '**'
+      - '!renovate/**'
+      - '!dependabot/**'
 
 jobs:
   test:
@@ -17,13 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
-          components: rustfmt, clippy
-
-      - name: Rust cache
-        uses: Swatinem/rust-cache@v2
+          components: rustfmt,clippy
 
       - name: Rustfmt
         run: cargo fmt --all -- --check
