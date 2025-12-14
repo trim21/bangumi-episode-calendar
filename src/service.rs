@@ -251,7 +251,9 @@ fn month_start_with_offset(date: chrono::NaiveDate, offset: i32) -> Option<chron
 
 fn filter_future_episodes(episodes: &[calendar::ParsedEpisode]) -> Vec<calendar::ParsedEpisode> {
     let today = chrono::Utc::now().date_naive();
-    let current_month_start = today.with_day(1).unwrap();
+    let Some(current_month_start) = month_start_with_offset(today, 0) else {
+        return Vec::new();
+    };
     let Some(prev_month_start) = month_start_with_offset(current_month_start, -1) else {
         return Vec::new();
     };
@@ -278,7 +280,7 @@ mod tests {
     #[test]
     fn include_previous_current_and_next_month() {
         let today = chrono::Utc::now().date_naive();
-        let current_month_start = today.with_day(1).unwrap();
+        let current_month_start = month_start_with_offset(today, 0).unwrap();
         let prev_month_start = month_start_with_offset(current_month_start, -1).unwrap();
         let next_month_start = month_start_with_offset(current_month_start, 1).unwrap();
         let month_after_next_start = month_start_with_offset(current_month_start, 2).unwrap();
