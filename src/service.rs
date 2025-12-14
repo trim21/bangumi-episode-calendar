@@ -3,6 +3,7 @@ use std::sync::Arc;
 use std::time::Duration;
 
 use futures::StreamExt;
+use chrono::Datelike;
 
 use crate::bangumi;
 use crate::cache::Cache;
@@ -27,8 +28,6 @@ const ICS_CACHE_TTL: Duration = Duration::from_secs(23 * 60 * 60);
 const SUBJECT_SHORT_TTL: Duration = Duration::from_secs(3 * 24 * 60 * 60);
 const SUBJECT_LONG_TTL: Duration = Duration::from_secs(7 * 24 * 60 * 60);
 const NOT_FOUND_SUBJECT_TTL: Duration = Duration::from_secs(24 * 60 * 60);
-
-const NOW_BUFFER_IN_PAST_DAYS: i64 = 3;
 
 #[derive(Clone)]
 pub struct CalendarService {
@@ -242,21 +241,75 @@ fn parse_episode(ep: bangumi::Episode) -> Option<calendar::ParsedEpisode> {
 }
 
 fn filter_future_episodes(episodes: &[calendar::ParsedEpisode]) -> Vec<calendar::ParsedEpisode> {
-    let today = chrono::Utc::now().timestamp() - NOW_BUFFER_IN_PAST_DAYS * 24 * 60 * 60;
+    let today = chrono::Utc::now().date_naive();
+    let current_month_start = today.with_day(1).expect("valid current month");
+    let prev_month_start = (current_month_start - chrono::Duration::days(1))
+        .with_day(1)
+        .expect("valid prev month");
+    let next_month_start = (current_month_start + chrono::Duration::days(32))
+        .with_day(1)
+        .expect("valid next month");
+    let month_after_next_start = (next_month_start + chrono::Duration::days(32))
+        .with_day(1)
+        .expect("valid month after next");
     episodes
         .iter()
         .filter_map(|ep| {
-            let start = chrono::NaiveDate::from_ymd_opt(
+            let date = chrono::NaiveDate::from_ymd_opt(
                 ep.air_date[0],
                 ep.air_date[1] as u32,
                 ep.air_date[2] as u32,
-            )?
-            .and_hms_opt(0, 0, 0)?
-            .and_utc()
-            .timestamp();
-            (start > today).then(|| ep.clone())
+            )?;
+            (date >= prev_month_start && date < month_after_next_start).then(|| ep.clone())
         })
         .collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn include_previous_current_and_next_month() {
+        let today = chrono::Utc::now().date_naive();
+        let current_month_start = today.with_day(1).unwrap();
+        let prev_month_start = (current_month_start - chrono::Duration::days(1))
+            .with_day(1)
+            .unwrap();
+        let next_month_start = (current_month_start + chrono::Duration::days(32))
+            .with_day(1)
+            .unwrap();
+        let month_after_next_start = (next_month_start + chrono::Duration::days(32))
+            .with_day(1)
+            .unwrap();
+
+        let episodes = vec![
+            parsed_episode(prev_month_start, 1.0, 1),
+            parsed_episode(current_month_start, 2.0, 2),
+            parsed_episode(
+                next_month_start + chrono::Duration::days(5),
+                3.0,
+                3,
+            ),
+            parsed_episode(month_after_next_start, 4.0, 4),
+            parsed_episode(prev_month_start - chrono::Duration::days(1), 5.0, 5),
+        ];
+
+        let filtered = filter_future_episodes(&episodes);
+        let ids: Vec<i64> = filtered.into_iter().map(|ep| ep.id).collect();
+
+        assert_eq!(ids, vec![1, 2, 3]);
+    }
+
+    fn parsed_episode(date: chrono::NaiveDate, sort: f64, id: i64) -> calendar::ParsedEpisode {
+        calendar::ParsedEpisode {
+            id,
+            sort,
+            name: String::new(),
+            air_date: [date.year(), date.month() as i32, date.day() as i32],
+            duration: String::new(),
+        }
+    }
 }
 
 fn fallback_name<'a>(values: impl IntoIterator<Item = &'a str>) -> String {
