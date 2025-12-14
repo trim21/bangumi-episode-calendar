@@ -3,19 +3,19 @@ name: release
 on:
   push:
     branches:
-      - "**"
-      - "!renovate/**"
-      - "!dependabot/**"
+      - '**'
+      - '!renovate/**'
+      - '!dependabot/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.sha }}
+  cancel-in-progress: true
 
 jobs:
   docker:
     runs-on: ubuntu-latest
     env:
-      IMAGE: "ghcr.io/trim21/bangumi-episode-calendar"
-
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.sha }}
-      cancel-in-progress: false
+      IMAGE: 'ghcr.io/trim21/bangumi-episode-calendar'
 
     steps:
       - uses: actions/checkout@v6
