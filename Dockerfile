@@ -1,4 +1,4 @@
-FROM rust:1-bookworm AS builder
+FROM rust:1-bookworm@sha256:9676d0547a259997add8f5924eb6b959c589ed39055338e23b99aba7958d6d31 AS builder
 
 WORKDIR /src
 
@@ -8,7 +8,7 @@ COPY assets ./assets
 
 RUN cargo build --release --locked
 
-FROM gcr.io/distroless/base-debian12:nonroot
+FROM gcr.io/distroless/base-debian12:nonroot@sha256:cd961bbef4ecc70d2b2ff41074dd1c932af3f141f2fc00e4d91a03a832e3a658
 WORKDIR /app
 
 COPY --from=builder /src/target/release/bangumi-episode-calendar /app/server
