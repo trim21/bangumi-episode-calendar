@@ -146,8 +146,7 @@ impl CalendarService {
         let subject = match self.client.get_subject(subject_id).await {
             Ok(v) => v,
             Err(bangumi::Error::NotFound) => {
-                if let Ok(payload) = serde_json::to_string(&Option::<calendar::SlimSubject>::None)
-                {
+                if let Ok(payload) = serde_json::to_string(&Option::<calendar::SlimSubject>::None) {
                     let _ = self
                         .cache
                         .set_string(&cache_key, &payload, NOT_FOUND_SUBJECT_TTL)
