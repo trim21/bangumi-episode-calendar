@@ -1,7 +1,6 @@
-use axum::response::IntoResponse;
-use axum::{routing::get, Router};
+use axum::Router;
 use http_body_util::BodyExt;
-use std::net::SocketAddr;
+use std::env;
 use std::sync::Arc;
 use tower::ServiceExt;
 
@@ -9,8 +8,7 @@ use bangumi_episode_calendar::{cache::MemoryCache, server, service};
 
 #[tokio::test]
 async fn test_index_page() {
-    let api = stub_api().await;
-    let app = build_app(api).await;
+    let app = build_app().await;
 
     let res = app
         .oneshot(
@@ -34,14 +32,14 @@ async fn test_index_page() {
 
 #[tokio::test]
 async fn test_calendar_ics() {
-    let api = stub_api().await;
-    let app = build_app(api).await;
+    let app = build_app().await;
+    let username = sample_username();
 
     let res = app
         .oneshot(
             http::Request::builder()
                 .method(http::Method::GET)
-                .uri("/episode-calendar/test-user.ics")
+                .uri(format!("/episode-calendar/{}.ics", username))
                 .body(axum::body::Body::empty())
                 .unwrap(),
         )
@@ -64,14 +62,16 @@ async fn test_calendar_ics() {
 
 #[tokio::test]
 async fn test_user_not_found() {
-    let api = stub_api().await;
-    let app = build_app(api).await;
+    let app = build_app().await;
 
     let res = app
         .oneshot(
             http::Request::builder()
                 .method(http::Method::GET)
-                .uri("/episode-calendar/missing.ics")
+                .uri(format!(
+                    "/episode-calendar/{}.ics",
+                    missing_username()
+                ))
                 .body(axum::body::Body::empty())
                 .unwrap(),
         )
@@ -81,81 +81,22 @@ async fn test_user_not_found() {
     assert_eq!(res.status(), http::StatusCode::NOT_FOUND);
 }
 
-async fn build_app(api_base: String) -> Router {
+async fn build_app() -> Router {
     let cache = Arc::new(MemoryCache::default());
-    let client = bangumi_episode_calendar::bangumi::Client::new(api_base);
+    let client = bangumi_episode_calendar::bangumi::Client::new(api_base_url());
     let svc = service::CalendarService::new(client, cache, 5);
     server::router(svc, false)
 }
 
-async fn stub_api() -> String {
-    let app = Router::new()
-        .route("/v0/users/:username/collections", get(user_collections))
-        .route("/v0/subjects/:id", get(subject))
-        .route("/v0/episodes", get(episodes));
-
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
-    let addr: SocketAddr = listener.local_addr().unwrap();
-    tokio::spawn(async move {
-        axum::serve(listener, app).await.unwrap();
-    });
-
-    format!("http://{}", addr)
+fn api_base_url() -> String {
+    env::var("BANGUMI_BASE_URL").unwrap_or_else(|_| "https://api.bgm.tv".to_string())
 }
 
-async fn user_collections(
-    axum::extract::Path(username): axum::extract::Path<String>,
-    axum::extract::Query(q): axum::extract::Query<std::collections::HashMap<String, String>>,
-) -> impl axum::response::IntoResponse {
-    if username == "missing" {
-        return http::StatusCode::NOT_FOUND.into_response();
-    }
-
-    let ty = q.get("type").map(|s| s.as_str()).unwrap_or("");
-    if ty == "3" {
-        return (
-            [(http::header::CONTENT_TYPE, "application/json")],
-            r#"{"data":[],"total":0,"limit":50,"offset":0}"#,
-        )
-            .into_response();
-    }
-
-    (
-        [(http::header::CONTENT_TYPE, "application/json")],
-        r#"{"data":[{"subject_id":1,"subject_type":2,"type":1,"tags":[]}],"total":1,"limit":50,"offset":0}"#,
-    )
-        .into_response()
+fn sample_username() -> String {
+    env::var("BANGUMI_TEST_USERNAME").unwrap_or_else(|_| "trim21".to_string())
 }
 
-async fn subject(
-    axum::extract::Path(id): axum::extract::Path<i64>,
-) -> impl axum::response::IntoResponse {
-    if id != 1 {
-        return http::StatusCode::NOT_FOUND.into_response();
-    }
-    (
-        [(http::header::CONTENT_TYPE, "application/json")],
-        r#"{"name":"Subject","name_cn":"主题","id":1,"total_episodes":2}"#,
-    )
-        .into_response()
-}
-
-async fn episodes(
-    axum::extract::Query(q): axum::extract::Query<std::collections::HashMap<String, String>>,
-) -> impl axum::response::IntoResponse {
-    if q.get("subject_id").map(|s| s.as_str()) != Some("1") {
-        return http::StatusCode::NOT_FOUND.into_response();
-    }
-
-    let airdate = (chrono::Utc::now() + chrono::Duration::days(1))
-        .date_naive()
-        .format("%Y-%m-%d")
-        .to_string();
-
-    let payload = format!(
-        r#"{{"data":[{{"airdate":"{}","name":"E1","name_cn":"第1话","duration":"24m","sort":1,"id":11}}],"total":1,"limit":200,"offset":0}}"#,
-        airdate
-    );
-
-    ([(http::header::CONTENT_TYPE, "application/json")], payload).into_response()
+fn missing_username() -> String {
+    env::var("BANGUMI_MISSING_USERNAME")
+        .unwrap_or_else(|_| "this-user-should-not-exist-ics".to_string())
 }
