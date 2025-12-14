@@ -11,7 +11,7 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     env:
-      IMAGE: "ghcr.io/trim21/bangumi-workers"
+      IMAGE: "ghcr.io/trim21/bangumi-episode-calendar"
 
     concurrency:
       group: ${{ github.workflow }}-${{ github.sha }}
@@ -47,9 +47,11 @@ jobs:
       - name: Build Final Docker Image
         uses: docker/build-push-action@v6
         with:
-          context: ./
+          context: .
+          file: Dockerfile
           provenance: false
-          push: true
+          platforms: linux/amd64
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
