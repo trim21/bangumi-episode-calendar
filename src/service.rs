@@ -3,7 +3,6 @@ use std::sync::Arc;
 use std::time::Duration;
 
 use futures::StreamExt;
-use chrono::Datelike;
 
 use crate::bangumi;
 use crate::cache::Cache;
@@ -240,26 +239,10 @@ fn parse_episode(ep: bangumi::Episode) -> Option<calendar::ParsedEpisode> {
     })
 }
 
-fn month_start_with_offset(date: chrono::NaiveDate, offset: i32) -> Option<chrono::NaiveDate> {
-    let start = date.with_day(1)?;
-    if offset >= 0 {
-        start.checked_add_months(chrono::Months::new(offset as u32))
-    } else {
-        start.checked_sub_months(chrono::Months::new(offset.unsigned_abs()))
-    }
-}
-
 fn filter_future_episodes(episodes: &[calendar::ParsedEpisode]) -> Vec<calendar::ParsedEpisode> {
     let today = chrono::Utc::now().date_naive();
-    let Some(current_month_start) = month_start_with_offset(today, 0) else {
-        return Vec::new();
-    };
-    let Some(prev_month_start) = month_start_with_offset(current_month_start, -1) else {
-        return Vec::new();
-    };
-    let Some(month_after_next_start) = month_start_with_offset(current_month_start, 2) else {
-        return Vec::new();
-    };
+    let start = today - chrono::Duration::days(40);
+    let end = today + chrono::Duration::days(60);
     episodes
         .iter()
         .filter_map(|ep| {
@@ -268,7 +251,7 @@ fn filter_future_episodes(episodes: &[calendar::ParsedEpisode]) -> Vec<calendar:
                 ep.air_date[1] as u32,
                 ep.air_date[2] as u32,
             )?;
-            (date >= prev_month_start && date < month_after_next_start).then(|| ep.clone())
+            (date >= start && date <= end).then(|| ep.clone())
         })
         .collect()
 }
@@ -276,25 +259,20 @@ fn filter_future_episodes(episodes: &[calendar::ParsedEpisode]) -> Vec<calendar:
 #[cfg(test)]
 mod tests {
     use super::*;
+    use chrono::Datelike;
 
     #[test]
-    fn include_previous_current_and_next_month() {
+    fn include_40_days_before_and_60_days_after() {
         let today = chrono::Utc::now().date_naive();
-        let current_month_start = month_start_with_offset(today, 0).unwrap();
-        let prev_month_start = month_start_with_offset(current_month_start, -1).unwrap();
-        let next_month_start = month_start_with_offset(current_month_start, 1).unwrap();
-        let month_after_next_start = month_start_with_offset(current_month_start, 2).unwrap();
+        let start = today - chrono::Duration::days(40);
+        let end = today + chrono::Duration::days(60);
 
         let episodes = vec![
-            parsed_episode(prev_month_start, 1.0, 1),
-            parsed_episode(current_month_start, 2.0, 2),
-            parsed_episode(
-                next_month_start + chrono::Duration::days(5),
-                3.0,
-                3,
-            ),
-            parsed_episode(month_after_next_start, 4.0, 4),
-            parsed_episode(prev_month_start - chrono::Duration::days(1), 5.0, 5),
+            parsed_episode(start, 1.0, 1),                         // boundary include
+            parsed_episode(today, 2.0, 2),                        // inside
+            parsed_episode(end, 3.0, 3),                          // boundary include
+            parsed_episode(end + chrono::Duration::days(1), 4.0, 4), // outside future
+            parsed_episode(start - chrono::Duration::days(1), 5.0, 5), // outside past
         ];
 
         let filtered = filter_future_episodes(&episodes);
