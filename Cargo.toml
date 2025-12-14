@@ -22,7 +22,7 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 urlencoding = "2.1.3"
 uuid = { version = "1", features = ["v5"] }
 # Redis cache
-redis = { version = "0.27", features = ["tokio-comp", "connection-manager"] }
+redis = { version = "0.32.7", features = ["tokio-comp", "connection-manager"] }
 # Optional request logging middleware
 tower-http = { version = "0.6.8", features = ["trace"] }
 axum-macros = "0.5.0"
