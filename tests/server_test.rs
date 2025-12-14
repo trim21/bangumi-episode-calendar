@@ -68,10 +68,7 @@ async fn test_user_not_found() {
         .oneshot(
             http::Request::builder()
                 .method(http::Method::GET)
-                .uri(format!(
-                    "/episode-calendar/{}.ics",
-                    missing_username()
-                ))
+                .uri(format!("/episode-calendar/{}.ics", missing_username()))
                 .body(axum::body::Body::empty())
                 .unwrap(),
         )
