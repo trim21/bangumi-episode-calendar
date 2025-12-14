@@ -241,17 +241,12 @@ fn parse_episode(ep: bangumi::Episode) -> Option<calendar::ParsedEpisode> {
 }
 
 fn month_start_with_offset(date: chrono::NaiveDate, offset: i32) -> Option<chrono::NaiveDate> {
-    let mut year = date.year();
-    let mut month = date.month() as i32 + offset;
-    while month > 12 {
-        year += 1;
-        month -= 12;
+    let start = date.with_day(1)?;
+    if offset >= 0 {
+        start.checked_add_months(chrono::Months::new(offset as u32))
+    } else {
+        start.checked_sub_months(chrono::Months::new(offset.unsigned_abs()))
     }
-    while month < 1 {
-        year -= 1;
-        month += 12;
-    }
-    chrono::NaiveDate::from_ymd_opt(year, month as u32, 1)
 }
 
 fn filter_future_episodes(episodes: &[calendar::ParsedEpisode]) -> Vec<calendar::ParsedEpisode> {
