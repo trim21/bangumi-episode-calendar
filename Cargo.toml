@@ -26,6 +26,7 @@ redis = { version = "1.0.1", features = ["tokio-comp", "connection-manager"] }
 # Optional request logging middleware
 tower-http = { version = "0.6.8", features = ["trace"] }
 axum-macros = "0.5.0"
+once_cell = "1.21.3"
 
 [dev-dependencies]
 http = "1.4.0"

@@ -1,4 +1,5 @@
 use chrono::{Datelike, Timelike, Utc};
+use once_cell::sync::Lazy;
 use uuid::Uuid;
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
@@ -153,7 +154,9 @@ fn format_datetime(d: chrono::DateTime<Utc>) -> String {
     )
 }
 
+static NAMESPACE_UUID: Lazy<Uuid> =
+    Lazy::new(|| Uuid::parse_str(NAMESPACE).expect("valid uuid namespace"));
+
 fn generate_uid(summary: &str) -> String {
-    let ns = Uuid::parse_str(NAMESPACE).expect("valid uuid namespace");
-    Uuid::new_v5(&ns, summary.as_bytes()).to_string()
+    Uuid::new_v5(&NAMESPACE_UUID, summary.as_bytes()).to_string()
 }

@@ -147,6 +147,7 @@ dependencies = [
  "http",
  "http-body-util",
  "hyper",
+ "once_cell",
  "redis",
  "reqwest",
  "serde",
