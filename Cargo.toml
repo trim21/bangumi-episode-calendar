@@ -28,7 +28,7 @@ tower-http = { version = "0.6", features = ["trace"] }
 axum-macros = "0.5.0"
 
 [dev-dependencies]
-http = "1"
+http = "1.4.0"
 http-body-util = "0.1"
 hyper = { version = "1", features = ["client"] }
 tower = "0.5"
