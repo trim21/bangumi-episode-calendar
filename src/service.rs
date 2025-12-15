@@ -233,7 +233,11 @@ fn parse_episode(ep: bangumi::Episode) -> Option<calendar::ParsedEpisode> {
     Some(calendar::ParsedEpisode {
         id: ep.id,
         sort: ep.sort,
-        name: html_unescape([ep.name_cn.as_str(), ep.name.as_str()]),
+        name: html_escape::decode_html_entities(&fallback_name([
+            ep.name_cn.as_str(),
+            ep.name.as_str(),
+        ]))
+        .into_owned(),
         air_date: [y, m, d],
         duration: ep.duration,
     })
@@ -271,15 +275,6 @@ fn unique_subject_ids(collections: &[bangumi::Collection]) -> Vec<i64> {
         set.insert(c.subject_id);
     }
     set.into_iter().collect()
-}
-
-fn html_unescape<'a>(values: impl IntoIterator<Item = &'a str>) -> String {
-    for v in values {
-        if !v.is_empty() {
-            return html_escape::decode_html_entities(v).into_owned();
-        }
-    }
-    String::new()
 }
 
 #[cfg(test)]
