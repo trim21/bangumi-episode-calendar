@@ -271,6 +271,7 @@ fn fallback_name<'a>(values: impl IntoIterator<Item = &'a str>) -> String {
 
 fn unique_subject_ids(collections: &[bangumi::Collection]) -> Vec<i64> {
     let mut set = HashSet::new();
+    set.reserve(collections.len());
     for c in collections {
         set.insert(c.subject_id);
     }
