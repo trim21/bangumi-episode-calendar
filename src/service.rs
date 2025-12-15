@@ -268,9 +268,9 @@ mod tests {
         let end = today + chrono::Duration::days(60);
 
         let episodes = vec![
-            parsed_episode(start, 1.0, 1),                         // boundary include
-            parsed_episode(today, 2.0, 2),                        // inside
-            parsed_episode(end, 3.0, 3),                          // boundary include
+            parsed_episode(start, 1.0, 1), // boundary include
+            parsed_episode(today, 2.0, 2), // inside
+            parsed_episode(end, 3.0, 3),   // boundary include
             parsed_episode(end + chrono::Duration::days(1), 4.0, 4), // outside future
             parsed_episode(start - chrono::Duration::days(1), 5.0, 5), // outside past
         ];
