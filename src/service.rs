@@ -28,8 +28,6 @@ const SUBJECT_SHORT_TTL: Duration = Duration::from_secs(3 * 24 * 60 * 60);
 const SUBJECT_LONG_TTL: Duration = Duration::from_secs(7 * 24 * 60 * 60);
 const NOT_FOUND_SUBJECT_TTL: Duration = Duration::from_secs(24 * 60 * 60);
 
-const NOW_BUFFER_IN_PAST_DAYS: i64 = 3;
-
 #[derive(Clone)]
 pub struct CalendarService {
     client: bangumi::Client,
@@ -235,26 +233,29 @@ fn parse_episode(ep: bangumi::Episode) -> Option<calendar::ParsedEpisode> {
     Some(calendar::ParsedEpisode {
         id: ep.id,
         sort: ep.sort,
-        name: html_unescape([ep.name_cn.as_str(), ep.name.as_str()]),
+        name: html_escape::decode_html_entities(&fallback_name([
+            ep.name_cn.as_str(),
+            ep.name.as_str(),
+        ]))
+        .into_owned(),
         air_date: [y, m, d],
         duration: ep.duration,
     })
 }
 
 fn filter_future_episodes(episodes: &[calendar::ParsedEpisode]) -> Vec<calendar::ParsedEpisode> {
-    let today = chrono::Utc::now().timestamp() - NOW_BUFFER_IN_PAST_DAYS * 24 * 60 * 60;
+    let today = chrono::Utc::now().date_naive();
+    let start = today - chrono::Duration::days(40);
+    let end = today + chrono::Duration::days(60);
     episodes
         .iter()
         .filter_map(|ep| {
-            let start = chrono::NaiveDate::from_ymd_opt(
+            let date = chrono::NaiveDate::from_ymd_opt(
                 ep.air_date[0],
                 ep.air_date[1] as u32,
                 ep.air_date[2] as u32,
-            )?
-            .and_hms_opt(0, 0, 0)?
-            .and_utc()
-            .timestamp();
-            (start > today).then(|| ep.clone())
+            )?;
+            (date >= start && date <= end).then(|| ep.clone())
         })
         .collect()
 }
@@ -276,19 +277,38 @@ fn unique_subject_ids(collections: &[bangumi::Collection]) -> Vec<i64> {
     set.into_iter().collect()
 }
 
-fn html_unescape<'a>(values: impl IntoIterator<Item = &'a str>) -> String {
-    for v in values {
-        if !v.is_empty() {
-            return html_unescape_single(v);
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use chrono::Datelike;
+
+    #[test]
+    fn include_40_days_before_and_60_days_after() {
+        let today = chrono::Utc::now().date_naive();
+        let start = today - chrono::Duration::days(40);
+        let end = today + chrono::Duration::days(60);
+
+        let episodes = vec![
+            parsed_episode(start, 1.0, 1), // boundary include
+            parsed_episode(today, 2.0, 2), // inside
+            parsed_episode(end, 3.0, 3),   // boundary include
+            parsed_episode(end + chrono::Duration::days(1), 4.0, 4), // outside future
+            parsed_episode(start - chrono::Duration::days(1), 5.0, 5), // outside past
+        ];
+
+        let filtered = filter_future_episodes(&episodes);
+        let ids: Vec<i64> = filtered.into_iter().map(|ep| ep.id).collect();
+
+        assert_eq!(ids, vec![1, 2, 3]);
+    }
+
+    fn parsed_episode(date: chrono::NaiveDate, sort: f64, id: i64) -> calendar::ParsedEpisode {
+        calendar::ParsedEpisode {
+            id,
+            sort,
+            name: String::new(),
+            air_date: [date.year(), date.month() as i32, date.day() as i32],
+            duration: String::new(),
         }
     }
-    String::new()
-}
-
-fn html_unescape_single(s: &str) -> String {
-    s.replace("&amp;", "&")
-        .replace("&lt;", "<")
-        .replace("&gt;", ">")
-        .replace("&quot;", "\"")
-        .replace("&#39;", "'")
 }
