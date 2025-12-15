@@ -276,18 +276,10 @@ fn unique_subject_ids(collections: &[bangumi::Collection]) -> Vec<i64> {
 fn html_unescape<'a>(values: impl IntoIterator<Item = &'a str>) -> String {
     for v in values {
         if !v.is_empty() {
-            return html_unescape_single(v);
+            return html_escape::decode_html_entities(v).into_owned();
         }
     }
     String::new()
-}
-
-fn html_unescape_single(s: &str) -> String {
-    s.replace("&amp;", "&")
-        .replace("&lt;", "<")
-        .replace("&gt;", ">")
-        .replace("&quot;", "\"")
-        .replace("&#39;", "'")
 }
 
 #[cfg(test)]
