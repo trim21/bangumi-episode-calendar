@@ -256,6 +256,40 @@ fn filter_future_episodes(episodes: &[calendar::ParsedEpisode]) -> Vec<calendar:
         .collect()
 }
 
+fn fallback_name<'a>(values: impl IntoIterator<Item = &'a str>) -> String {
+    for v in values {
+        if !v.trim().is_empty() {
+            return v.to_string();
+        }
+    }
+    String::new()
+}
+
+fn unique_subject_ids(collections: &[bangumi::Collection]) -> Vec<i64> {
+    let mut set = HashSet::new();
+    for c in collections {
+        set.insert(c.subject_id);
+    }
+    set.into_iter().collect()
+}
+
+fn html_unescape<'a>(values: impl IntoIterator<Item = &'a str>) -> String {
+    for v in values {
+        if !v.is_empty() {
+            return html_unescape_single(v);
+        }
+    }
+    String::new()
+}
+
+fn html_unescape_single(s: &str) -> String {
+    s.replace("&amp;", "&")
+        .replace("&lt;", "<")
+        .replace("&gt;", ">")
+        .replace("&quot;", "\"")
+        .replace("&#39;", "'")
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -290,38 +324,4 @@ mod tests {
             duration: String::new(),
         }
     }
-}
-
-fn fallback_name<'a>(values: impl IntoIterator<Item = &'a str>) -> String {
-    for v in values {
-        if !v.trim().is_empty() {
-            return v.to_string();
-        }
-    }
-    String::new()
-}
-
-fn unique_subject_ids(collections: &[bangumi::Collection]) -> Vec<i64> {
-    let mut set = HashSet::new();
-    for c in collections {
-        set.insert(c.subject_id);
-    }
-    set.into_iter().collect()
-}
-
-fn html_unescape<'a>(values: impl IntoIterator<Item = &'a str>) -> String {
-    for v in values {
-        if !v.is_empty() {
-            return html_unescape_single(v);
-        }
-    }
-    String::new()
-}
-
-fn html_unescape_single(s: &str) -> String {
-    s.replace("&amp;", "&")
-        .replace("&lt;", "<")
-        .replace("&gt;", ">")
-        .replace("&quot;", "\"")
-        .replace("&#39;", "'")
 }
