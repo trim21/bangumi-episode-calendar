@@ -1,7 +1,7 @@
 use std::time::Duration;
 
 use anyhow::Context;
-use reqwest::StatusCode;
+use reqwest::{StatusCode, Url};
 use serde::de::DeserializeOwned;
 use serde::Deserialize;
 
@@ -43,19 +43,23 @@ impl Client {
         offset: i64,
         limit: i64,
     ) -> Result<Paged<Collection>, Error> {
-        let url = format!(
+        let mut url = Url::parse(&format!(
             "{}/v0/users/{}/collections",
             self.base_url,
             urlencoding::encode(username)
-        );
+        ))
+        .context("build collections url")?;
+
+        {
+            let mut query = url.query_pairs_mut();
+            query.append_pair("type", &collection_type.to_string());
+            query.append_pair("offset", &offset.to_string());
+            query.append_pair("limit", &limit.to_string());
+        }
+
         let res = self
             .http
             .get(url)
-            .query(&[
-                ("type", collection_type.to_string()),
-                ("offset", offset.to_string()),
-                ("limit", limit.to_string()),
-            ])
             .send()
             .await
             .context("send collections request")?;
@@ -81,15 +85,19 @@ impl Client {
         offset: i64,
         limit: i64,
     ) -> Result<Paged<Episode>, Error> {
-        let url = format!("{}/v0/episodes", self.base_url);
+        let mut url = Url::parse(&format!("{}/v0/episodes", self.base_url))
+            .context("build episodes url")?;
+
+        {
+            let mut query = url.query_pairs_mut();
+            query.append_pair("subject_id", &subject_id.to_string());
+            query.append_pair("offset", &offset.to_string());
+            query.append_pair("limit", &limit.to_string());
+        }
+
         let res = self
             .http
             .get(url)
-            .query(&[
-                ("subject_id", subject_id.to_string()),
-                ("offset", offset.to_string()),
-                ("limit", limit.to_string()),
-            ])
             .send()
             .await
             .context("send episodes request")?;
