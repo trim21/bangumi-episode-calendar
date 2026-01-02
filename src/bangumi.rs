@@ -43,19 +43,19 @@ impl Client {
         offset: i64,
         limit: i64,
     ) -> Result<Paged<Collection>, Error> {
-        let mut url = Url::parse(&format!(
-            "{}/v0/users/{}/collections",
-            self.base_url,
-            urlencoding::encode(username)
-        ))
+        let url = Url::parse_with_params(
+            &format!(
+                "{}/v0/users/{}/collections",
+                self.base_url,
+                urlencoding::encode(username)
+            ),
+            &[
+                ("type", collection_type.to_string()),
+                ("offset", offset.to_string()),
+                ("limit", limit.to_string()),
+            ],
+        )
         .context("build collections url")?;
-
-        {
-            let mut query = url.query_pairs_mut();
-            query.append_pair("type", &collection_type.to_string());
-            query.append_pair("offset", &offset.to_string());
-            query.append_pair("limit", &limit.to_string());
-        }
 
         let res = self
             .http
@@ -85,15 +85,15 @@ impl Client {
         offset: i64,
         limit: i64,
     ) -> Result<Paged<Episode>, Error> {
-        let mut url = Url::parse(&format!("{}/v0/episodes", self.base_url))
-            .context("build episodes url")?;
-
-        {
-            let mut query = url.query_pairs_mut();
-            query.append_pair("subject_id", &subject_id.to_string());
-            query.append_pair("offset", &offset.to_string());
-            query.append_pair("limit", &limit.to_string());
-        }
+        let url = Url::parse_with_params(
+            &format!("{}/v0/episodes", self.base_url),
+            &[
+                ("subject_id", subject_id.to_string()),
+                ("offset", offset.to_string()),
+                ("limit", limit.to_string()),
+            ],
+        )
+        .context("build episodes url")?;
 
         let res = self
             .http
