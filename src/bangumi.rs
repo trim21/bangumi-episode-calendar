@@ -1,7 +1,7 @@
 use std::time::Duration;
 
 use anyhow::Context;
-use reqwest::StatusCode;
+use reqwest::{StatusCode, Url};
 use serde::de::DeserializeOwned;
 use serde::Deserialize;
 
@@ -43,19 +43,23 @@ impl Client {
         offset: i64,
         limit: i64,
     ) -> Result<Paged<Collection>, Error> {
-        let url = format!(
-            "{}/v0/users/{}/collections",
-            self.base_url,
-            urlencoding::encode(username)
-        );
-        let res = self
-            .http
-            .get(url)
-            .query(&[
+        let url = Url::parse_with_params(
+            &format!(
+                "{}/v0/users/{}/collections",
+                self.base_url,
+                urlencoding::encode(username)
+            ),
+            &[
                 ("type", collection_type.to_string()),
                 ("offset", offset.to_string()),
                 ("limit", limit.to_string()),
-            ])
+            ],
+        )
+        .context("build collections url")?;
+
+        let res = self
+            .http
+            .get(url)
             .send()
             .await
             .context("send collections request")?;
@@ -81,15 +85,19 @@ impl Client {
         offset: i64,
         limit: i64,
     ) -> Result<Paged<Episode>, Error> {
-        let url = format!("{}/v0/episodes", self.base_url);
-        let res = self
-            .http
-            .get(url)
-            .query(&[
+        let url = Url::parse_with_params(
+            &format!("{}/v0/episodes", self.base_url),
+            &[
                 ("subject_id", subject_id.to_string()),
                 ("offset", offset.to_string()),
                 ("limit", limit.to_string()),
-            ])
+            ],
+        )
+        .context("build episodes url")?;
+
+        let res = self
+            .http
+            .get(url)
             .send()
             .await
             .context("send episodes request")?;
