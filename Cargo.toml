@@ -38,4 +38,4 @@ once_cell = "1.21.3"
 http = "1.4.0"
 http-body-util = "0.1.3"
 hyper = { version = "1.8.1", features = ["client"] }
-tower = "0.5.2"
+tower = "0.5.3"
