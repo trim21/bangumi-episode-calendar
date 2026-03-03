@@ -8,7 +8,7 @@ COPY assets ./assets
 
 RUN cargo build --release --locked
 
-FROM gcr.io/distroless/cc-debian13:nonroot@sha256:5c94e1d2e831f0fadfe4048427f6ff3a91481606da2841c5b26674220ac84d2d
+FROM gcr.io/distroless/cc-debian13:nonroot@sha256:4cf9e68a5cbd8c9623480b41d5ed6052f028c44cc29f91b21590613ab8bec824
 WORKDIR /app
 
 COPY --from=builder /src/target/release/bangumi-episode-calendar /app/server
