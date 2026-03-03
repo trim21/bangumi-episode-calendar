@@ -6,6 +6,11 @@
     "github>Trim21/renovate-config:app",
     "github>Trim21/renovate-config:monthly"
   ],
+  "labels": [
+    "ci:auto-merge",
+    "dependencies"
+  ],
+  "prConcurrentLimit": 3,
   "rangeStrategy": "bump",
   "dockerfile": {
     "fileMatch": [
