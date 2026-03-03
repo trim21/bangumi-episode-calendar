@@ -1,14 +1,11 @@
 name: release
 
 on:
-  pull_request:
-    branches:
-      - 'master'
   push:
     branches:
-      - '**'
       - '!renovate/**'
       - '!dependabot/**'
+      - master
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.sha }}
